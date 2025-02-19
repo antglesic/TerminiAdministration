@@ -3,7 +3,7 @@ using TerminiWeb.Infrastructure.WeatherService;
 using TerminiWeb.Infrastructure.WeatherService.Dtos;
 using TerminiWeb.Infrastructure.WeatherService.Models;
 
-namespace TerminiWeb.Pages
+namespace TerminiWeb.Components.Pages
 {
 	public partial class Weather : ComponentBase
 	{

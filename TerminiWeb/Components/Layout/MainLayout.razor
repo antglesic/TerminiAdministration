@@ -1,0 +1,55 @@
+﻿@using TerminiWeb.Themes
+@inherits LayoutComponentBase
+
+<MudThemeProvider @bind-IsDarkMode="@_isDarkMode" Theme="@Theme" />
+<MudPopoverProvider />
+<MudDialogProvider />
+<MudSnackbarProvider />
+
+<MudToggleIconButton @bind-Toggled="_isDarkMode"
+					 Icon="@Icons.Material.Filled.DarkMode"
+					 Color="@Color.Primary"
+					 ToggledColor="@Color.Warning"
+					 ToggledIcon="@Icons.Material.Filled.WbSunny"
+					 Class="ma-1" />
+
+<MudLayout>
+	<MudAppBar Elevation="2">
+		<MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
+		<MudSpacer />
+	</MudAppBar>
+	<MudDrawer @bind-Open="@_drawerOpen">
+		<NavMenu />
+	</MudDrawer>
+	<MudMainContent>
+		@Body
+	</MudMainContent>
+</MudLayout>
+
+@code {
+	#region Fields
+
+	private bool _isDarkMode = false;
+	private int selectedYear;
+	private int selectedFarmId;
+	bool _drawerOpen = true;
+	MudTheme Theme = new TerminiTheme().Get;
+
+	#endregion
+
+	#region Injections
+
+	[Inject]
+	private NavigationManager NavigationManager { get; set; }
+
+	#endregion
+
+	#region Methods
+
+	void DrawerToggle()
+	{
+		_drawerOpen = !_drawerOpen;
+	}
+
+	#endregion
+}
