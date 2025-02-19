@@ -1,0 +1,6 @@
+@TerminiAPI_HostAddress = http://localhost:5005
+
+GET {{TerminiAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
