@@ -7,11 +7,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Abstractions" Version="2.3.0" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.2" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\TerminiAdministration.ServiceDefaults\TerminiAdministration.ServiceDefaults.csproj" />
+    <ProjectReference Include="..\TerminiService\TerminiService.csproj" />
   </ItemGroup>
 
 </Project>
