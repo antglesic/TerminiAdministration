@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.Extensions.Options;
 using TerminiWeb.Infrastructure.Common.Configuration;
+using TerminiWeb.Infrastructure.PlayerService;
 using TerminiWeb.Infrastructure.WeatherService;
 
 namespace TerminiWeb.Configuration
@@ -39,9 +40,17 @@ namespace TerminiWeb.Configuration
 
 			// Add services
 			services.AddTransient<IWeatherService, WeatherService>();
+			services.AddTransient<IPlayerService, PlayerService>();
 
 			// Configure Service HttpClient for external services
 			services.AddHttpClient<WeatherService>()
+				.ConfigureHttpClient((serviceProvider, client) =>
+				{
+					ApiEndpointSettings apiEndpointSettings = serviceProvider.GetRequiredService<IOptions<ApiEndpointSettings>>().Value;
+					client.BaseAddress = new Uri(apiEndpointSettings.TerminiApiBaseUrl);
+				});
+
+			services.AddHttpClient<PlayerService>()
 				.ConfigureHttpClient((serviceProvider, client) =>
 				{
 					ApiEndpointSettings apiEndpointSettings = serviceProvider.GetRequiredService<IOptions<ApiEndpointSettings>>().Value;
