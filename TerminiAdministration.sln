@@ -18,6 +18,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TerminiDomain", "TerminiDom
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TerminiService", "TerminiService\TerminiService.csproj", "{45D85D02-E5A8-463A-9DCA-83B870C6C060}"
 EndProject
+Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "TerminiDatabase", "TerminiDatabase\TerminiDatabase.sqlproj", "{EA3868F4-8164-4618-9EC5-B016D8418C82}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution files", "Solution files", "{82A94D1F-126B-4839-9A04-1B6D59E75B82}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -52,6 +56,12 @@ Global
 		{45D85D02-E5A8-463A-9DCA-83B870C6C060}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{45D85D02-E5A8-463A-9DCA-83B870C6C060}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{45D85D02-E5A8-463A-9DCA-83B870C6C060}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EA3868F4-8164-4618-9EC5-B016D8418C82}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EA3868F4-8164-4618-9EC5-B016D8418C82}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EA3868F4-8164-4618-9EC5-B016D8418C82}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{EA3868F4-8164-4618-9EC5-B016D8418C82}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EA3868F4-8164-4618-9EC5-B016D8418C82}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EA3868F4-8164-4618-9EC5-B016D8418C82}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -64,6 +74,7 @@ Global
 		{2A4E924E-1084-4DE4-B983-0576B88C95BE} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{72A5D87D-17D1-4A3F-92ED-BB3058F37081} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{45D85D02-E5A8-463A-9DCA-83B870C6C060} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{EA3868F4-8164-4618-9EC5-B016D8418C82} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {40EDC322-9638-4435-AE0F-CCE64F7B380D}
