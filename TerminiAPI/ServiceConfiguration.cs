@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using TerminiDataAccess.TerminiContext;
 using TerminiService.Common.Configuration;
+using TerminiService.PlayerService;
 using TerminiService.WeatherService;
 
 namespace TerminiAPI
@@ -16,12 +17,13 @@ namespace TerminiAPI
 		private static void ConfigureApplicationServices(IServiceCollection services, IConfiguration configuration)
 		{
 			services.AddTransient<IWeatherService, WeatherService>();
+			services.AddTransient<IPlayerService, PlayerService>();
 
 			services.AddDbContext<TerminiContext>(options =>
 			{
 				options.UseSqlServer(configuration.GetConnectionString("Default"));
 #if !DEBUG
-				options.UseModel(TerminiContextModel.Instance);
+				options.UseModel(TerminiContextModel.Instance));
 #endif
 				options.EnableSensitiveDataLogging();
 			});

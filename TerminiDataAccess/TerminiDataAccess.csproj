@@ -7,12 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="TerminiContext\Compiled\**" />
-    <EmbeddedResource Remove="TerminiContext\Compiled\**" />
-    <None Remove="TerminiContext\Compiled\**" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="EntityFramework" Version="6.5.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.2" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Abstractions" Version="9.0.2" />

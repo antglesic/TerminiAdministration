@@ -46,6 +46,16 @@ namespace TerminiService.PlayerService
 					})
 					.TagWith("PlayerService.GetPlayersList")
 					.ToListAsync();
+
+				if (players != null && players.Any())
+				{
+					response.Players = players;
+					response.Success = true;
+				}
+				else
+				{
+					response.Message = "No players found.";
+				}
 			}
 			catch (Exception ex)
 			{

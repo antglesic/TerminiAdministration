@@ -4,8 +4,8 @@ using TerminiService.PlayerService.Models;
 
 namespace TerminiAPI.Controllers
 {
-	[Route("api/[controller]")]
 	[ApiController]
+	[Route("[controller]")]
 	public class PlayerController : ControllerBase
 	{
 		#region Fields
