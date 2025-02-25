@@ -1,18 +1,6 @@
-using TerminiService.Common.Configuration;
-using TerminiService.WeatherService;
-
 var builder = WebApplication.CreateBuilder(args);
 
 builder.AddServiceDefaults();
-
-// Add settings
-builder.Services.Configure<TerminiApiAppSettings>(options =>
-{
-	builder.Configuration.GetSection(nameof(TerminiApiAppSettings)).Bind(options);
-});
-
-// Add services
-builder.Services.AddTransient<IWeatherService, WeatherService>();
 
 // Add services to the container.
 builder.Services.AddControllers();
