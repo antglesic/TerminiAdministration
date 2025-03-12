@@ -60,7 +60,7 @@ namespace TerminiWeb.Infrastructure.PlayerService
 
 							if (responseStream != null && responseStream.Length > 0)
 							{
-								PlayerListResponseDto playerList = await JsonSerializer.DeserializeAsync<PlayerListResponseDto>(responseStream, _jsonSerializerOptions);
+								PlayerListResponseDto? playerList = await JsonSerializer.DeserializeAsync<PlayerListResponseDto>(responseStream, _jsonSerializerOptions);
 
 								if (playerList != null && playerList.Players != null && playerList.Players.Any())
 								{

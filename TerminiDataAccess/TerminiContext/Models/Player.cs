@@ -10,4 +10,12 @@ public partial class Player
     public bool Active { get; set; }
 
     public DateTime DateCreated { get; set; }
+
+    public string? Name { get; set; }
+
+    public string? Surname { get; set; }
+
+    public string? Foot { get; set; }
+
+    public string? Sex { get; set; }
 }

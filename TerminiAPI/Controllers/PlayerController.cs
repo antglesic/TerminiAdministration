@@ -26,6 +26,9 @@ namespace TerminiAPI.Controllers
 		#region Methods
 
 		[HttpGet("GetPlayersList")]
+		[ProducesResponseType(typeof(GetPlayersResponse), StatusCodes.Status200OK)]
+		[ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
+		[ProducesResponseType(typeof(void), StatusCodes.Status403Forbidden)]
 		public async Task<ActionResult<GetPlayersResponse>> GetPlayersList()
 		{
 			GetPlayersRequest request = new GetPlayersRequest();

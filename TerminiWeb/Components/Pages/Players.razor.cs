@@ -86,7 +86,7 @@ namespace TerminiWeb.Components.Pages
 		{
 			if (args.Item != null)
 			{
-				_selectedItemText = $"{args.Item.Id} - {args.Item.Active} - {args.Item.DateCreated}";
+				_selectedItemText = $"{args.Item.Name} {args.Item.Surname}";
 			}
 		}
 
@@ -104,11 +104,13 @@ namespace TerminiWeb.Components.Pages
 		{
 			if (string.IsNullOrEmpty(searchString))
 				return true;
-			if (player.Id.ToString().Contains(searchString, StringComparison.OrdinalIgnoreCase))
+			if (player.Name.ToString().Contains(searchString, StringComparison.OrdinalIgnoreCase))
 				return true;
-			if (player.Active.ToString().Contains(searchString, StringComparison.OrdinalIgnoreCase))
+			if (player.Surname.ToString().Contains(searchString, StringComparison.OrdinalIgnoreCase))
 				return true;
-			if (player.DateCreated.ToString().Contains(searchString, StringComparison.OrdinalIgnoreCase))
+			if (player.Sex.ToString().Contains(searchString, StringComparison.OrdinalIgnoreCase))
+				return true;
+			if (player.Foot.ToString().Contains(searchString, StringComparison.OrdinalIgnoreCase))
 				return true;
 
 			return false;

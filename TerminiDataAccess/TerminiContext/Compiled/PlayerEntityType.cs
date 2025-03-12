@@ -19,7 +19,7 @@ namespace TerminiDataAccess.TerminiContext
                 "TerminiDataAccess.TerminiContext.Models.Player",
                 typeof(Player),
                 baseEntityType,
-                propertyCount: 3,
+                propertyCount: 7,
                 keyCount: 1);
 
             var id = runtimeEntityType.AddProperty(
@@ -52,6 +52,46 @@ namespace TerminiDataAccess.TerminiContext
             dateCreated.AddAnnotation("Relational:ColumnType", "datetime");
             dateCreated.AddAnnotation("Relational:DefaultValueSql", "(getdate())");
             dateCreated.AddAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.None);
+
+            var foot = runtimeEntityType.AddProperty(
+                "Foot",
+                typeof(string),
+                propertyInfo: typeof(Player).GetProperty("Foot", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly),
+                fieldInfo: typeof(Player).GetField("<Foot>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly),
+                nullable: true,
+                maxLength: 5,
+                unicode: false);
+            foot.AddAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.None);
+
+            var name = runtimeEntityType.AddProperty(
+                "Name",
+                typeof(string),
+                propertyInfo: typeof(Player).GetProperty("Name", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly),
+                fieldInfo: typeof(Player).GetField("<Name>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly),
+                nullable: true,
+                maxLength: 255,
+                unicode: false);
+            name.AddAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.None);
+
+            var sex = runtimeEntityType.AddProperty(
+                "Sex",
+                typeof(string),
+                propertyInfo: typeof(Player).GetProperty("Sex", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly),
+                fieldInfo: typeof(Player).GetField("<Sex>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly),
+                nullable: true,
+                maxLength: 6,
+                unicode: false);
+            sex.AddAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.None);
+
+            var surname = runtimeEntityType.AddProperty(
+                "Surname",
+                typeof(string),
+                propertyInfo: typeof(Player).GetProperty("Surname", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly),
+                fieldInfo: typeof(Player).GetField("<Surname>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly),
+                nullable: true,
+                maxLength: 255,
+                unicode: false);
+            surname.AddAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.None);
 
             var key = runtimeEntityType.AddKey(
                 new[] { id });

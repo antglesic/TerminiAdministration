@@ -42,7 +42,11 @@ namespace TerminiService.PlayerService
 					{
 						Id = p.Id,
 						Active = p.Active,
-						DateCreated = p.DateCreated
+						DateCreated = p.DateCreated,
+						Name = p.Name ?? string.Empty,
+						Surname = p.Surname ?? string.Empty,
+						Sex = p.Sex ?? string.Empty,
+						Foot = p.Foot ?? string.Empty
 					})
 					.TagWith("PlayerService.GetPlayersList")
 					.ToListAsync();

@@ -8,8 +8,7 @@
 else
 {
 	<MudText HtmlTag="span">Item: @_selectedItemText</MudText>
-	<MudText>Selected items (@_selectedPlayer != null ? 1 : 0): @(_selectedPlayer == null ? "" : _selectedItemText)</MudText>
-
+	<MudText>Selected items @(_selectedPlayer != null ? 1 : 0): @(_selectedPlayer == null ? "" : _selectedItemText)</MudText>
 
 	<MudTable @ref="_table" T="PlayerDto" Items="@_players" MultiSelection="true" Hover="true"
 			  @bind-SelectedItem="@_selectedPlayer" @bind-SelectedItems="@_selectedItems" OnRowClick="@OnRowClick" SelectOnRowClick="@_selectOnRowClick"
@@ -24,15 +23,17 @@ else
 		</ToolBarContent>
 
 		<HeaderContent>
-			<MudTh> Id </MudTh>
-			<MudTh> Active </MudTh>
-			<MudTh> DateCreated </MudTh>
+			<MudTh>Name</MudTh>
+			<MudTh>Surname</MudTh>
+			<MudTh>Sex</MudTh>
+			<MudTh>Foot</MudTh>
 		</HeaderContent>
 
 		<RowTemplate>
-			<MudTd DataLabel="Id">@context.Id</MudTd>
-			<MudTd DataLabel="Active">@context.Active</MudTd>
-			<MudTd DataLabel="DateCreated">@context.DateCreated</MudTd>
+			<MudTd DataLabel="Name">@context.Name</MudTd>
+			<MudTd DataLabel="Surname">@context.Surname</MudTd>
+			<MudTd DataLabel="Sex">@context.Sex</MudTd>
+			<MudTd DataLabel="Foot">@context.Foot</MudTd>
 		</RowTemplate>
 
 		<NoRecordsContent>
@@ -57,7 +58,7 @@ else
 	{
 		<MudPaper Class="pa-4 mt-4">
 			<MudText Typo="Typo.h6">Selected Item</MudText>
-			<MudItem>@($"Id: {_selectedPlayer.Id} => Active: {_selectedPlayer.Active} => DateCreated: {_selectedPlayer.DateCreated}")</MudItem>
+			<MudItem>@($"Name: {_selectedPlayer.Name} => Surname: {_selectedPlayer.Surname}")</MudItem>
 		</MudPaper>
 	}
 	else
@@ -65,5 +66,5 @@ else
 		<MudText Typo="Typo.h6"> No Item was selected! </MudText>
 	}
 
-	<MudText HtmlTag="span">Selected items: @(_selectedItems == null ? "" : string.Join(", ", _selectedItems.OrderBy(x => x.Id).Select(x => x.Id)))</MudText>
+	<MudText HtmlTag="span">Selected items: @(_selectedItems == null ? "" : string.Join(", ", _selectedItems.OrderBy(x => x.Id).Select(x => $"{x.Name} {x.Surname}")))</MudText>
 }

@@ -64,4 +64,7 @@
     <Build Include="Termini\Tables\Player.sql" />
     <Build Include="Security\Termini.sql" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="TerminiCompare.scmp" />
+  </ItemGroup>
 </Project>

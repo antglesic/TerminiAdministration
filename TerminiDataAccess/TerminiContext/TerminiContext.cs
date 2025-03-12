@@ -26,6 +26,18 @@ public partial class TerminiContext : DbContext
             entity.Property(e => e.DateCreated)
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime");
+            entity.Property(e => e.Foot)
+                .HasMaxLength(5)
+                .IsUnicode(false);
+            entity.Property(e => e.Name)
+                .HasMaxLength(255)
+                .IsUnicode(false);
+            entity.Property(e => e.Sex)
+                .HasMaxLength(6)
+                .IsUnicode(false);
+            entity.Property(e => e.Surname)
+                .HasMaxLength(255)
+                .IsUnicode(false);
         });
 
         OnModelCreatingPartial(modelBuilder);

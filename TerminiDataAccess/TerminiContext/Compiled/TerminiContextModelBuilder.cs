@@ -11,7 +11,7 @@ namespace TerminiDataAccess.TerminiContext
     public partial class TerminiContextModel
     {
         private TerminiContextModel()
-            : base(skipDetectChanges: false, modelId: new Guid("bb623b65-1db2-46a0-af65-359f421628b1"), entityTypeCount: 1)
+            : base(skipDetectChanges: false, modelId: new Guid("c7794aff-7b53-4ef6-8c1e-26e40e7a6d83"), entityTypeCount: 1)
         {
         }
 
