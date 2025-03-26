@@ -116,6 +116,34 @@ namespace TerminiWeb.Components.Pages
 			return false;
 		}
 
+		public void OnSelectedItemChanged(PlayerDto item)
+		{
+			try
+			{
+				Console.WriteLine("Selected player from dropdown: {FullName}", item.FullName);
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine(ex.Message);
+			}
+		}
+
+		public void OnSelectedItemsChanged(IEnumerable<PlayerDto> item)
+		{
+			try
+			{
+				Console.WriteLine("Selected players:");
+				foreach (var player in item)
+				{
+					Console.WriteLine(player.FullName);
+				}
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine(ex.Message);
+			}
+		}
+
 		#endregion
 	}
 }

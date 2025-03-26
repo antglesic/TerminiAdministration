@@ -9,5 +9,12 @@
 		public string Surname { get; set; } = string.Empty;
 		public string Sex { get; set; } = string.Empty;
 		public string Foot { get; set; } = string.Empty;
+		public string FullName
+		{
+			get
+			{
+				return $"{Name} {Surname}";
+			}
+		}
 	}
 }

@@ -10,6 +10,8 @@
 
 	<ItemGroup>
 		<PackageReference Include="AutoMapper" Version="14.0.0" />
+		<PackageReference Include="DropDownPackage" Version="1.0.1" />
+		<PackageReference Include="MultiSelectPackage" Version="1.0.3" />
 		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="9.0.2" />
 		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="9.0.2" PrivateAssets="all" />
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.2" />
