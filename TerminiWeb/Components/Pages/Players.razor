@@ -67,4 +67,24 @@ else
 	}
 
 	<MudText HtmlTag="span">Selected items: @(_selectedItems == null ? "" : string.Join(", ", _selectedItems.OrderBy(x => x.Id).Select(x => $"{x.Name} {x.Surname}")))</MudText>
+
+	<DropDown T="PlayerDto"
+			  Items="@_players"
+			  DisplayProperty="FullName"
+			  IdentifierProperty="Id"
+			  ValueChanged="OnSelectedItemChanged"
+			  CanSearch="true"
+			  SearchPlaceHolder="Search..."
+			  CustomStyle=""
+			  Width="35%" />
+
+	<MultiSelect T="PlayerDto"
+			  Items="@_players"
+			  DisplayProperty="FullName"
+			  IdentifierProperty="Id"
+			  ValuesChanged="OnSelectedItemsChanged"
+			  CanSearch="true"
+			  SearchPlaceHolder="Search..."
+			  CustomStyle=""
+			  Width="35%" />
 }
