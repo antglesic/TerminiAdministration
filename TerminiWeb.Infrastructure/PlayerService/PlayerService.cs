@@ -52,6 +52,18 @@ namespace TerminiWeb.Infrastructure.PlayerService
 				{
 					string Apiurl = $"{_apiEndpointSettings.TerminiApiBaseUrl}/{_controllerEndpoint}/GetPlayersList";
 					_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(@"Bearer", ExternalServicesHelper.CreateToken());
+
+					List<string> queryParameters = new List<string>();
+
+					if (!string.IsNullOrEmpty(request.Name))
+						queryParameters.Add($"name={Uri.EscapeDataString(request.Name)}");
+
+					if (!string.IsNullOrEmpty(request.Surname))
+						queryParameters.Add($"surname={Uri.EscapeDataString(request.Surname)}");
+
+					if (queryParameters.Any())
+						Apiurl += "?" + string.Join("&", queryParameters);
+
 					using (HttpResponseMessage responseContent = await _httpClient.GetAsync(Apiurl))
 					{
 						if (responseContent.IsSuccessStatusCode)

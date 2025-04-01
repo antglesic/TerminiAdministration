@@ -1,0 +1,145 @@
+@using TerminiWeb.Components.Common.Enumerators
+@typeparam TItem
+
+@code {
+
+	[CascadingParameter(Name = "Table")]
+	public DataGrid<TItem> Table { get; set; }
+
+	/// <summary>
+	/// Text to be displayed in header
+	/// </summary>
+	[Parameter]
+	public string Caption { get; set; }
+
+	/// <summary>
+	/// Bound property from TItem
+	/// </summary>
+	[Parameter]
+	public string Property { get; set; }
+
+	/// <summary>
+	/// Format of value
+	/// </summary>
+	[Parameter]
+	public string Format { get; set; }
+
+	/// <summary>
+	/// Content to render inside td element
+	/// </summary>
+	[Parameter]
+	public RenderFragment<TItem> Template { get; set; }
+
+	/// <summary>
+	/// Content to render inside th element
+	/// </summary>
+	[Parameter]
+	public RenderFragment HeaderTemplate { get; set; }
+
+	/// <summary>
+	/// CSS class of td element
+	/// </summary>
+	[Parameter]
+	public string ItemCssClass { get; set; }
+
+	/// <summary>
+	/// CSS class of th element
+	/// </summary>
+	[Parameter]
+	public string HeaderCssClass { get; set; }
+
+	[Parameter]
+	public string IsHidden { get; set; }
+
+	/// <summary>
+	/// Flag to enagle/disable sorting on column. Works only if Sortable flas is set on the grid component.
+	/// </summary>
+	/// <value>
+	/// Default true.
+	/// </value>
+	[Parameter]
+	public bool Sortable { get; set; } = true;
+
+	/// <summary>
+	/// The alignment of text in column.
+	/// </summary>
+	[Parameter]
+	public AlignOption? Alignment { get; set; }
+
+	/// <summary>
+	/// Flag to enable/disable column filter in grid. If true it will allow show column filter.
+	/// </summary>
+	[Parameter]
+	public bool Filterable { get; set; }
+
+	/// <summary>
+	/// Name of property in filter model that will filter bind to.
+	/// </summary>
+	[Parameter]
+	public string FilterModelProperty { get; set; }
+
+	/// <summary>
+	/// Flag that defines filter rendering. If set to true it will render dropdown
+	/// </summary>
+	[Parameter]
+	public bool IsDecodeFilter { get; set; }
+
+	/// <summary>
+	/// Source for decode dropdown.
+	/// </summary>
+	[Parameter]
+	public IEnumerable<object> DecodeFilterSource { get; set; }
+
+	/// <summary>
+	/// Name of property in DecodeFilterSource that will render in dropdown.
+	/// </summary>
+	[Parameter]
+	public string DecodeFilterNameProperty { get; set; }
+
+	/// <summary>
+	/// Value of property in DecodeFilterSource that will render in dropdown.
+	/// </summary>
+	[Parameter]
+	public string DecodeFilterValueProperty { get; set; }
+
+	private const string alignLeftStyle = "text-align: left;";
+	private const string alignCenterStyle = "text-align: center;";
+	private const string alignRightStyle = "text-align: right;";
+
+	protected override void OnInitialized()
+	{
+		Table.AddColumn(this);
+	}
+
+	public string GetAlignmentStyle()
+	{
+		if (!Alignment.HasValue)
+		{
+			return string.Empty;
+		}
+
+		switch (Alignment.Value)
+		{
+			case AlignOption.Left:
+				return alignLeftStyle;
+			case AlignOption.Center:
+				return alignCenterStyle;
+			case AlignOption.Right:
+				return alignRightStyle;
+			default:
+				return string.Empty;
+		}
+	}
+
+	public string GetHiddenStyle()
+	{
+		if (!string.IsNullOrEmpty(IsHidden))
+		{
+			return "display: none;";
+		}
+		else
+		{
+			return string.Empty;
+		}
+	}
+}

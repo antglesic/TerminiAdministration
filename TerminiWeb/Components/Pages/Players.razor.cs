@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 using MudBlazor;
+using TerminiWeb.FilterModels;
 using TerminiWeb.Infrastructure.PlayerService;
 using TerminiWeb.Infrastructure.PlayerService.Dtos;
 using TerminiWeb.Infrastructure.PlayerService.Models;
@@ -22,6 +23,8 @@ namespace TerminiWeb.Components.Pages
 		private MudTable<PlayerDto>? _table;
 		private string _selectedItemText = "No row clicked";
 		private HashSet<PlayerDto>? _selectedItems;
+		private int[] _pageSizeOptions = new int[] { 5, 10, 20 };
+		private PlayerFilterModel _filterModel = new PlayerFilterModel();
 
 		#endregion
 
@@ -41,7 +44,7 @@ namespace TerminiWeb.Components.Pages
 		{
 			if (firstLoad)
 			{
-				bool isLoaded = await GetPlayers();
+				bool isLoaded = await GetPlayers(_filterModel);
 				firstLoad = false;
 				StateHasChanged();
 			}
@@ -49,9 +52,11 @@ namespace TerminiWeb.Components.Pages
 			await base.OnInitializedAsync();
 		}
 
-		private async Task<bool> GetPlayers()
+		private async Task<bool> GetPlayers(PlayerFilterModel filter)
 		{
 			GetPlayerListRequest request = new GetPlayerListRequest();
+			request.Name = filter.Name;
+			request.Surname = filter.Surname;
 
 			try
 			{
@@ -80,6 +85,12 @@ namespace TerminiWeb.Components.Pages
 		private void CurrentPageSizeChanged(int size)
 		{
 			_pageSize = size;
+		}
+
+		private async Task FilteredSearch()
+		{
+			await GetPlayers(_filterModel);
+			StateHasChanged();
 		}
 
 		void OnRowClick(TableRowClickEventArgs<PlayerDto> args)
@@ -142,6 +153,34 @@ namespace TerminiWeb.Components.Pages
 			{
 				Console.WriteLine(ex.Message);
 			}
+		}
+
+		private async Task EditPlayer(PlayerDto data)
+		{
+			try
+			{
+				Console.WriteLine(data);
+				Console.WriteLine("Edit player called {0} with player: {1}", DateTime.Now.ToString(), data?.FullName ?? string.Empty);
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError($"Error in EditPlayer: {ex.Message}", ex);
+				throw;
+			}
+
+			await InvokeAsync(StateHasChanged);
+		}
+
+		private async Task DeletePlayer(PlayerDto data)
+		{
+			Console.WriteLine("Delete player called {0} with player: {1}", DateTime.Now.ToString(), data?.FullName ?? string.Empty);
+			await InvokeAsync(StateHasChanged);
+		}
+
+		private async Task ViewPlayer(PlayerDto data)
+		{
+			Console.WriteLine("View player called {0} with player: {1}", DateTime.Now.ToString(), data?.FullName ?? string.Empty);
+			await InvokeAsync(StateHasChanged);
 		}
 
 		#endregion

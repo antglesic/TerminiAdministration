@@ -5,6 +5,8 @@ namespace TerminiWeb.Infrastructure.PlayerService.Models
 {
 	public class GetPlayerListRequest : RequestBase
 	{
+		public string Name { get; set; } = string.Empty;
+		public string Surname { get; set; } = string.Empty;
 	}
 
 	public class GetPlayerListResponse : ResponseBase<GetPlayerListRequest>

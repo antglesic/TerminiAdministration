@@ -1,5 +1,6 @@
 ﻿@page "/players"
 @using TerminiWeb.Infrastructure.PlayerService.Dtos
+@using TerminiWeb.Components.Common
 
 @if (_players == null)
 {
@@ -79,12 +80,38 @@ else
 			  Width="35%" />
 
 	<MultiSelect T="PlayerDto"
+				 Items="@_players"
+				 DisplayProperty="FullName"
+				 IdentifierProperty="Id"
+				 ValuesChanged="OnSelectedItemsChanged"
+				 CanSearch="true"
+				 SearchPlaceHolder="Search..."
+				 CustomStyle=""
+				 Width="35%" />
+
+	<DataGrid TItem="PlayerDto"
 			  Items="@_players"
-			  DisplayProperty="FullName"
-			  IdentifierProperty="Id"
-			  ValuesChanged="OnSelectedItemsChanged"
-			  CanSearch="true"
-			  SearchPlaceHolder="Search..."
-			  CustomStyle=""
-			  Width="35%" />
+			  Sortable="true"
+			  PageSizeOptions="@_pageSizeOptions"
+			  PageNumber="@_pageNumber"
+			  PageSize="@_pageSize"
+			  Filterable="true"
+			  FilterModel="@_filterModel"
+			  OnSearch="@FilteredSearch">
+		<GridColumn TItem="PlayerDto" Property="Name" Caption="Name" Sortable="false" Filterable="true" FilterModelProperty="Name" />
+		<GridColumn TItem="PlayerDto" Property="Surname" Caption="Surname" Sortable="false" Filterable="true" FilterModelProperty="Surname" />
+		<GridColumn TItem="PlayerDto" Property="FullName" Caption="FullName" Sortable="true" Filterable="false" />
+		<GridColumn TItem="PlayerDto" Sortable="false" Alignment="Common.Enumerators.AlignOption.Right">
+			<Template Context="player">
+				<ContextMenu>
+					<ContextMenuItem Text="Edit" OnClick="async () => await EditPlayer(player)">
+						@Icons.Material.Filled.Edit
+					</ContextMenuItem>
+					<ContextMenuItem Text="Delete" Icon="@Icons.Material.Filled.Delete" OnClick="async () => await DeletePlayer(player)" />
+					<ContextMenuItem Text="View" Icon="@Icons.Material.Filled.Visibility" OnClick="async () => await ViewPlayer(player)" />
+				</ContextMenu>
+			</Template>
+		</GridColumn>
+
+	</DataGrid>
 }

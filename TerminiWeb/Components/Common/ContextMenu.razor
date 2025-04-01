@@ -1,0 +1,23 @@
+﻿
+<CascadingValue Value="(ContextMenu)this" Name="ContextMenu">
+	@ChildContent
+</CascadingValue>
+
+<div @attributes="Attributes" class="dropdown @cssClass">
+	<button @onclick="() => Show = !Show" @onfocusout="CloseContextMenu" class="@contextButtonCssClass"><img src="icons/more_vert.svg" />@caption</button>
+	<div style="width:inherit; max-width:inherit; max-height:300px; overflow-x:hidden; min-width:inherit; align-content:inherit; text-align:inherit; right:0; bottom:auto" class="dropdown-content @ShowClass">
+		<ul style="padding-left: 0; width:inherit; min-width:inherit;">
+			@foreach (ContextMenuItem item in Items)
+			{
+				if (item.Disabled)
+				{
+					<li @attributes="item.Attributes" class="dropdown-item disabled">@item.Text</li>
+				}
+				else
+				{
+					<li @attributes="item.Attributes" class="dropdown-item" @onclick="@(() => item.OnClick.InvokeAsync(Data))">@item.Text</li>
+				}
+			}
+		</ul>
+	</div>
+</div>

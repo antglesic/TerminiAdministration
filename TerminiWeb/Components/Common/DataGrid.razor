@@ -1,0 +1,182 @@
+@using TerminiWeb.Components.Common.EventArgs
+@using TerminiWeb.Components.Common.Enumerators
+@typeparam TItem
+
+<CascadingValue Value="(DataGrid<TItem>)this" Name="Table">
+	@ChildContent
+</CascadingValue>
+
+<div>
+	<table class="table table-striped table-borderless @enableSelectionCssClass">
+		<thead>
+			<tr style="border-bottom: 1px solid; border-color: rgba(0, 0, 0, 0.12);">
+				@if (Columns != null)
+				{
+					@foreach (var column in Columns)
+					{
+						if (Sortable && column.Sortable)
+						{
+							<th scope="col" style="cursor:pointer; @column.GetHiddenStyle();" @onclick="@(() => SortTable(column.Property))" @key="column" class="@column.HeaderCssClass">
+								@if (column.HeaderTemplate != null)
+								{
+									@column.HeaderTemplate
+								}
+								else
+								{
+									@column.Caption
+								}
+								@if (Filterable && column.Filterable)
+								{
+									if (column.IsDecodeFilter)
+									{
+										<DropDown T="@(TItem)"
+												  Items="column.DecodeFilterSource.Cast<TItem>()"
+												  SearchPlaceHolder="Traži..."
+												  CanSearch="true"
+												  DisplayProperty="@(column.DecodeFilterNameProperty)"
+												  IdentifierProperty="@(column.DecodeFilterValueProperty)"
+												  SelectedItem="@((TItem)column.DecodeFilterSource.FirstOrDefault(x => x.GetType().GetProperty(column.DecodeFilterValueProperty)?.GetValue(x)?.ToString() == GetFilterValue(!string.IsNullOrWhiteSpace(column.FilterModelProperty) ? column.FilterModelProperty : column.Property)))"
+												  ValueChanged="@((e) => OnInput(e?.ToString() ?? string.Empty, !string.IsNullOrWhiteSpace(column.FilterModelProperty) ? column.FilterModelProperty : column.Property))" />
+									}
+									else
+									{
+										<input type="text" class="form-control-xs"
+											   @oninput="@((e) => OnInput(e.Value?.ToString() ?? string.Empty, !string.IsNullOrWhiteSpace(column.FilterModelProperty) ? column.FilterModelProperty : column.Property))"
+											   value="@GetFilterValue(!string.IsNullOrWhiteSpace(column.FilterModelProperty) ? column.FilterModelProperty : column.Property)" @onkeyup="FilterTextKeyUp">
+									}
+								}
+							</th>
+						}
+						else
+						{
+							<th scope="col" @key="column" style="@column.GetHiddenStyle();" class="@column.HeaderCssClass">
+								<div class="@(Filterable ? "d-flex flex-column" : "")">
+									<div>
+										@if (column.HeaderTemplate != null)
+										{
+											@column.HeaderTemplate
+										}
+										else
+										{
+											@column.Caption
+										}
+									</div>
+
+									<div class="@(Filterable ? "filter-kontejner" : "")">
+										@if (Filterable && column.Filterable)
+										{
+
+											@if (column.IsDecodeFilter)
+											{
+												<DropDown T="@(TItem)"
+														  Items="column.DecodeFilterSource.Cast<TItem>()"
+														  SearchPlaceHolder="Traži..."
+														  CanSearch="true"
+														  DisplayProperty="@(column.DecodeFilterNameProperty)"
+														  IdentifierProperty="@(column.DecodeFilterValueProperty)"
+														  SelectedItem="@((TItem)column.DecodeFilterSource.FirstOrDefault(x => x.GetType().GetProperty(column.DecodeFilterValueProperty)?.GetValue(x)?.ToString() == GetFilterValue(!string.IsNullOrWhiteSpace(column.FilterModelProperty) ? column.FilterModelProperty : column.Property)))"
+														  ValueChanged="@((e) => OnInput(e?.ToString() ?? string.Empty, !string.IsNullOrWhiteSpace(column.FilterModelProperty) ? column.FilterModelProperty : column.Property))"
+														  CustomStyle="dropdown-small dropdown-fit-content"></DropDown>
+											}
+											else
+											{
+												<input type="text" class="form-control-xs"
+													   @oninput="@((e) => OnInput(e.Value?.ToString() ?? string.Empty, !string.IsNullOrWhiteSpace(column.FilterModelProperty) ? column.FilterModelProperty : column.Property))"
+													   value="@GetFilterValue(!string.IsNullOrWhiteSpace(column.FilterModelProperty) ? column.FilterModelProperty : column.Property)" @onkeyup="FilterTextKeyUp">
+											}
+										}
+									</div>
+								</div>
+							</th>
+						}
+					}
+				}
+
+			</tr>
+		</thead>
+		<tbody>
+			@if (ItemList != null)
+			{
+				@foreach (var item in ItemList)
+				{
+					<tr @key="item" @onclick="() => OnRowClick(item)">
+						@foreach (var column in Columns)
+						{
+							<td @key="column" style="@column.GetAlignmentStyle(); @column.GetHiddenStyle();" class="@column.ItemCssClass">
+								@if (column.Template != null)
+								{
+									@column.Template(item)
+								}
+								else if (!string.IsNullOrWhiteSpace(column.Format))
+								{
+									@string.Format("{0:" + column.Format + "}", item.GetType().GetProperty(column.Property).GetValue(item))
+								}
+								else
+								{
+									@item.GetType().GetProperty(column.Property).GetValue(item)
+								}
+							</td>
+						}
+					</tr>
+				}
+			}
+		</tbody>
+	</table>
+	@if (Items != null && Items.Any())
+	{
+		<div class="pagination__container">
+			@if ((RowCount ?? Items.Count()) > PageSize)
+			{
+				<ul class="pagination">
+					@if (currentPage == 1)
+					{
+						<li class="previous disabled">
+							<a tabindex="0" role="button" disabled="disabled">Previous</a>
+						</li>
+					}
+					else
+					{
+						<li class="previous">
+							<a tabindex="0" role="button" @onclick="@(async () => await NavigateToPage("previous"))">Previous</a>
+						</li>
+					}
+
+					@for (int i = 0; i < pagingNumbers.Length; i++)
+					{
+						int pageNumber = pagingNumbers[i];
+						<li class="@(pageNumber == currentPage ? "active" : string.Empty)">
+							<a role="button" disabled="true" tabindex="0" @onclick="@(async () => await SelectPage(pageNumber))">@pageNumber</a>
+						</li>
+					}
+
+					@if (currentPage == totalPages)
+					{
+						<li class="next disabled">
+							<a tabindex="0" role="button" disabled="disabled">Next</a>
+						</li>
+					}
+					else
+					{
+						<li class="next">
+							<a tabindex="0" role="button" @onclick="@(async () => await NavigateToPage("next"))">Next</a>
+						</li>
+					}
+				</ul>
+			}
+			<div class="pagination__info">@(currentPage* PageSize + 1 - PageSize) - @CalculatePagerItems() od @(RowCount ?? Items.Count())</div>
+			<div>
+				<div class="pagination__perPage">
+					Results per page
+					@foreach (int pageSize in PageSizeOptions)
+					{
+						<div @onclick="() => ChangePageSize(pageSize)" class="pagination__perPage-number @(PageSize == pageSize ? "active" : "")">@pageSize</div>
+					}
+				</div>
+			</div>
+		</div>
+	}
+	else
+	{
+		<div class="ml-5 no-results">No data records to show...</div>
+	}
+</div>

@@ -37,7 +37,16 @@ namespace TerminiService.PlayerService
 			{
 				IEnumerable<PlayerDto> players = await _terminiContext.Player
 					.AsNoTracking()
-					.Where(p => p.Active)
+					.Where(p => p.Active
+						&&
+						(
+							string.IsNullOrEmpty(request.Name) || p.Name.Contains(request.Name)
+						)
+						&&
+						(
+							string.IsNullOrEmpty(request.Surname) || p.Surname.Contains(request.Surname)
+						)
+					)
 					.Select(p => new PlayerDto
 					{
 						Id = p.Id,
