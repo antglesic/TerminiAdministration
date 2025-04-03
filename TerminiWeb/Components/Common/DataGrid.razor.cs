@@ -288,7 +288,7 @@ namespace TerminiWeb.Components.Common
 
 		public void ClearFilter()
 		{
-			columnFilterValues = new();
+			columnFilterValues = new Dictionary<string, string>();
 		}
 
 		async Task FilterTextKeyUp(KeyboardEventArgs args)

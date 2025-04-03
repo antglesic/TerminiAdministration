@@ -40,11 +40,11 @@ namespace TerminiService.PlayerService
 					.Where(p => p.Active
 						&&
 						(
-							string.IsNullOrEmpty(request.Name) || p.Name.Contains(request.Name)
+							string.IsNullOrEmpty(request.Name) || (p.Name != null && p.Name.Contains(request.Name))
 						)
 						&&
 						(
-							string.IsNullOrEmpty(request.Surname) || p.Surname.Contains(request.Surname)
+							string.IsNullOrEmpty(request.Surname) || (p.Surname != null && p.Surname.Contains(request.Surname))
 						)
 					)
 					.Select(p => new PlayerDto
