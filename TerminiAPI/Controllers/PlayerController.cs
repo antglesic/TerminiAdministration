@@ -29,11 +29,12 @@ namespace TerminiAPI.Controllers
 		[ProducesResponseType(typeof(GetPlayersResponse), StatusCodes.Status200OK)]
 		[ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
 		[ProducesResponseType(typeof(void), StatusCodes.Status403Forbidden)]
-		public async Task<ActionResult<GetPlayersResponse>> GetPlayersList([FromQuery] string? name, [FromQuery] string? surname)
+		public async Task<ActionResult<GetPlayersResponse>> GetPlayersList([FromQuery] string? name, [FromQuery] string? surname, [FromQuery] string? fullName)
 		{
 			GetPlayersRequest request = new GetPlayersRequest();
 			request.Name = name ?? string.Empty;
 			request.Surname = surname ?? string.Empty;
+			request.FullName = fullName ?? string.Empty;
 
 			GetPlayersResponse response = await _playerService.GetPlayersList(request);
 

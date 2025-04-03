@@ -46,6 +46,17 @@ namespace TerminiService.PlayerService
 						(
 							string.IsNullOrEmpty(request.Surname) || (p.Surname != null && p.Surname.Contains(request.Surname))
 						)
+						&&
+						(
+							string.IsNullOrEmpty(request.FullName) ||
+							(
+								(p.Name != null || p.Surname != null) &&
+								EF.Functions.Like(
+									(p.Name ?? "") + " " + (p.Surname ?? ""),
+									"%" + request.FullName + "%"
+								)
+							)
+						)
 					)
 					.Select(p => new PlayerDto
 					{

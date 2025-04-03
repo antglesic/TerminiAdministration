@@ -57,6 +57,7 @@ namespace TerminiWeb.Components.Pages
 			GetPlayerListRequest request = new GetPlayerListRequest();
 			request.Name = filter.Name;
 			request.Surname = filter.Surname;
+			request.FullName = filter.FullName;
 
 			try
 			{
