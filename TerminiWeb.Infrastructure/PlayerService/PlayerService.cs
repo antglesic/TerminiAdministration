@@ -61,6 +61,9 @@ namespace TerminiWeb.Infrastructure.PlayerService
 					if (!string.IsNullOrEmpty(request.Surname))
 						queryParameters.Add($"surname={Uri.EscapeDataString(request.Surname)}");
 
+					if (!string.IsNullOrEmpty(request.FullName))
+						queryParameters.Add($"fullName={Uri.EscapeDataString(request.FullName)}");
+
 					if (queryParameters.Any())
 						Apiurl += "?" + string.Join("&", queryParameters);
 

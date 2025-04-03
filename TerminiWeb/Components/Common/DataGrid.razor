@@ -17,14 +17,22 @@
 						if (Sortable && column.Sortable)
 						{
 							<th scope="col" style="cursor:pointer; @column.GetHiddenStyle();" @onclick="@(() => SortTable(column.Property))" @key="column" class="@column.HeaderCssClass">
-								@if (column.HeaderTemplate != null)
-								{
-									@column.HeaderTemplate
-								}
-								else
-								{
-									@column.Caption
-								}
+								<div class="header-content">
+									<span class="header-text">
+										@if (column.HeaderTemplate != null)
+										{
+											@column.HeaderTemplate
+										}
+										else
+										{
+											@column.Caption
+										}
+									</span>
+									@if (Sortable && column.Sortable)
+									{
+										<div class="sort-arrow @(activeSortColumn == column.Property ? "active" : "") @(isSortedAscending ? "ascending" : "descending")"></div>
+									}
+								</div>
 								@if (Filterable && column.Filterable)
 								{
 									if (column.IsDecodeFilter)
@@ -40,7 +48,7 @@
 									}
 									else
 									{
-										<input type="text" class="form-control-xs"
+										<input type="text" class="form-control-xs filter filter-input"
 											   @oninput="@((e) => OnInput(e.Value?.ToString() ?? string.Empty, !string.IsNullOrWhiteSpace(column.FilterModelProperty) ? column.FilterModelProperty : column.Property))"
 											   value="@GetFilterValue(!string.IsNullOrWhiteSpace(column.FilterModelProperty) ? column.FilterModelProperty : column.Property)" @onkeyup="FilterTextKeyUp">
 									}
@@ -80,7 +88,7 @@
 											}
 											else
 											{
-												<input type="text" class="form-control-xs"
+												<input type="text" class="form-control-xs filter filter-input"
 													   @oninput="@((e) => OnInput(e.Value?.ToString() ?? string.Empty, !string.IsNullOrWhiteSpace(column.FilterModelProperty) ? column.FilterModelProperty : column.Property))"
 													   value="@GetFilterValue(!string.IsNullOrWhiteSpace(column.FilterModelProperty) ? column.FilterModelProperty : column.Property)" @onkeyup="FilterTextKeyUp">
 											}
