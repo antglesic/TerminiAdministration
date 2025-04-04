@@ -97,7 +97,9 @@ else
 			  PageSize="@_pageSize"
 			  Filterable="true"
 			  FilterModel="@_filterModel"
-			  OnSearch="@FilteredSearch">
+			  OnSearch="@FilteredSearch"
+			  RowSelectionIdentifierProperty="Id"
+			  EnableRowSelection="true">
 		<GridColumn TItem="PlayerDto" Property="Name" Caption="Name" Sortable="false" Filterable="true" FilterModelProperty="Name" />
 		<GridColumn TItem="PlayerDto" Property="Surname" Caption="Surname" Sortable="false" Filterable="true" FilterModelProperty="Surname" />
 		<GridColumn TItem="PlayerDto" Property="FullName" Caption="FullName" Sortable="true" Filterable="true" FilterModelProperty="FullName" />

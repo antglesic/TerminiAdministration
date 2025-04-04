@@ -356,6 +356,18 @@
 		border: 0;
 	}
 
+.selected-row {
+	background-color: #96BC33 !important;
+}
+
+	.selected-row td {
+		font-weight: 700 !important;
+	}
+
+table tr.selected-row {
+	background-color: #96BC33 !important;
+}
+
 /************PAGER****************/
 
 .page-button {

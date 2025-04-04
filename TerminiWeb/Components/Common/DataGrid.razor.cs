@@ -39,7 +39,19 @@ namespace TerminiWeb.Components.Common
 		public bool IgnoreEnableRowSelection { get; set; }
 
 		[Parameter]
-		public TItem SelectedRowItem { get; set; }
+		public TItem? SelectedRowItem
+		{
+			get { return SelectedItem; }
+			set
+			{
+				if (SelectedItem is null && value is null || (SelectedItem != null && SelectedItem.Equals(value)))
+				{
+					return;
+				}
+				SelectedItem = value;
+				SelectedRowItemChanged.InvokeAsync(value);
+			}
+		}
 
 		[Parameter]
 		public EventCallback<TItem> SelectedRowItemChanged { get; set; }
@@ -58,6 +70,9 @@ namespace TerminiWeb.Components.Common
 		[Parameter]
 		public EventCallback<object> OnSearch { get; set; }
 
+		[Parameter]
+		public string RowSelectionIdentifierProperty { get; set; } = string.Empty;
+
 		private IEnumerable<TItem>? ItemList { get; set; }
 
 		private bool isSortedAscending;
@@ -65,7 +80,6 @@ namespace TerminiWeb.Components.Common
 		private TItem? SelectedItem;
 		private string? enableSelectionCssClass;
 		private Dictionary<string, string> columnFilterValues = new Dictionary<string, string>();
-
 		private List<TItem> SelectedItems { get; set; } = new List<TItem>();
 
 		protected override void OnParametersSet()
@@ -238,6 +252,32 @@ namespace TerminiWeb.Components.Common
 
 				SelectedRowItem = item;
 			}
+		}
+
+		private string GetRowSelectedClass(TItem item)
+		{
+			string retVal = string.Empty;
+			bool isRowSelected = false;
+
+			if (SelectedRowItem != null)
+			{
+				TItem selectedItem = SelectedRowItem;
+				if (item != null)
+				{
+					object? selectedItemId = selectedItem?.GetType()?.GetProperty(RowSelectionIdentifierProperty)?.GetValue(selectedItem, null);
+					object? itemId = item?.GetType()?.GetProperty(RowSelectionIdentifierProperty)?.GetValue(item, null);
+
+					if (selectedItemId != null && itemId != null && selectedItemId == itemId)
+						isRowSelected = true;
+				}
+			}
+
+			if ((EnableRowSelection || IgnoreEnableRowSelection) && (SelectedItems.Contains(item) || isRowSelected))
+			{
+				retVal = "selected-row";
+			}
+
+			return retVal;
 		}
 
 		private void OnInput(string filter, string property)

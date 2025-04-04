@@ -107,23 +107,26 @@
 			{
 				@foreach (var item in ItemList)
 				{
-					<tr @key="item" @onclick="() => OnRowClick(item)">
-						@foreach (var column in Columns)
+					<tr @key="item" class="@GetRowSelectedClass(item)" @onclick="() => OnRowClick(item)">
+						@if (Columns != null)
 						{
-							<td @key="column" style="@column.GetAlignmentStyle(); @column.GetHiddenStyle();" class="@column.ItemCssClass">
-								@if (column.Template != null)
-								{
-									@column.Template(item)
-								}
-								else if (!string.IsNullOrWhiteSpace(column.Format))
-								{
-									@string.Format("{0:" + column.Format + "}", item.GetType().GetProperty(column.Property).GetValue(item))
-								}
-								else
-								{
-									@item.GetType().GetProperty(column.Property).GetValue(item)
-								}
-							</td>
+							@foreach (var column in Columns)
+							{
+								<td @key="column" style="@column.GetAlignmentStyle(); @column.GetHiddenStyle();" class="@column.ItemCssClass">
+									@if (column.Template != null)
+									{
+										@column.Template(item)
+									}
+									else if (!string.IsNullOrWhiteSpace(column.Format))
+									{
+										@string.Format("{0:" + column.Format + "}", item?.GetType()?.GetProperty(column.Property)?.GetValue(item))
+									}
+									else
+									{
+										@item?.GetType()?.GetProperty(column.Property)?.GetValue(item)
+									}
+								</td>
+							}
 						}
 					</tr>
 				}
