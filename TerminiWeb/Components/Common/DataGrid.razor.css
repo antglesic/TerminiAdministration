@@ -25,6 +25,10 @@
 	padding: 0.3rem;
 }
 
+.selected-row td {
+	font-weight: 700 !important;
+}
+
 .table-bordered {
 	border: 1px solid #dee2e6;
 }
@@ -356,18 +360,6 @@
 		border: 0;
 	}
 
-.selected-row {
-	background-color: #96BC33 !important;
-}
-
-	.selected-row td {
-		font-weight: 700 !important;
-	}
-
-table tr.selected-row {
-	background-color: #96BC33 !important;
-}
-
 /************PAGER****************/
 
 .page-button {
@@ -688,3 +680,41 @@ table tr.selected-row {
 th:hover .sort-arrow:not(.active) {
 	opacity: 0.8;
 }
+
+.form-check-input {
+	width: 16px;
+	height: 16px;
+	margin-top: 0.25em;
+	border: 2px solid rgba(150, 188, 51, 0.5);
+	border-radius: 3px;
+	cursor: pointer;
+	transition: all 0.2s ease-in-out;
+}
+
+	.form-check-input:checked {
+		background-color: #96BC33;
+		border-color: #96BC33;
+	}
+
+	.form-check-input:hover {
+		border-color: #96BC33;
+	}
+
+	.form-check-input:focus {
+		box-shadow: 0 0 0 0.2rem rgba(150, 188, 51, 0.25);
+		border-color: #96BC33;
+		outline: none;
+	}
+
+	/* Custom checkmark style */
+	.form-check-input:checked::after {
+		content: '';
+		position: absolute;
+		left: 5px;
+		top: 1px;
+		width: 4px;
+		height: 8px;
+		border: solid white;
+		border-width: 0 2px 2px 0;
+		transform: rotate(45deg);
+	}

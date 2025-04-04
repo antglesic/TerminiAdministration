@@ -56,8 +56,6 @@ namespace TerminiWeb.Components.Common
 		[Parameter]
 		public EventCallback<TItem> SelectedRowItemChanged { get; set; }
 
-		public List<GridColumn<TItem>> Columns { get; } = new List<GridColumn<TItem>>();
-
 		[Parameter]
 		public int PageSize { get; set; }
 
@@ -73,14 +71,82 @@ namespace TerminiWeb.Components.Common
 		[Parameter]
 		public string RowSelectionIdentifierProperty { get; set; } = string.Empty;
 
-		private IEnumerable<TItem>? ItemList { get; set; }
+		[Parameter]
+		public bool MultiSelectionEnabled { get; set; }
 
+		[Parameter]
+		public IEnumerable<TItem>? SelectedRowItems
+		{
+			get => SelectedItems;
+			set
+			{
+				SelectedItems = value?.ToList() ?? new List<TItem>();
+				SelectedRowItemsChanged.InvokeAsync(SelectedItems);
+			}
+		}
+
+		[Parameter]
+		public EventCallback<IEnumerable<TItem>> SelectedRowItemsChanged { get; set; }
+
+		[Parameter]
+		public string? CustomCssClass { get; set; }
+
+		public List<GridColumn<TItem>> Columns { get; } = new List<GridColumn<TItem>>();
+		private IEnumerable<TItem>? ItemList { get; set; }
 		private bool isSortedAscending;
 		private string? activeSortColumn;
 		private TItem? SelectedItem;
 		private string? enableSelectionCssClass;
 		private Dictionary<string, string> columnFilterValues = new Dictionary<string, string>();
 		private List<TItem> SelectedItems { get; set; } = new List<TItem>();
+
+		public bool AreAllRowsSelected => ItemList != null && ItemList.Any() && ItemList.All(item => IsRowSelected(item));
+
+		private bool IsRowSelected(TItem item) => SelectedItems.Contains(item);
+
+		private void SelectAllRows(ChangeEventArgs e)
+		{
+			if (ItemList == null) return;
+
+			if (e.Value is bool isChecked)
+			{
+				if (isChecked)
+				{
+					// Add all items that aren't already selected
+					foreach (var item in ItemList.Where(item => !SelectedItems.Contains(item)))
+					{
+						SelectedItems.Add(item);
+					}
+				}
+				else
+				{
+					// Remove all items that are currently displayed
+					foreach (var item in ItemList.ToList())
+					{
+						SelectedItems.Remove(item);
+					}
+				}
+
+				SelectedRowItems = SelectedItems;
+			}
+		}
+
+		private void OnRowCheckboxChange(TItem item, ChangeEventArgs e)
+		{
+			if (e.Value is bool isChecked)
+			{
+				if (isChecked && !SelectedItems.Contains(item))
+				{
+					SelectedItems.Add(item);
+				}
+				else if (!isChecked)
+				{
+					SelectedItems.Remove(item);
+				}
+
+				SelectedRowItems = SelectedItems;
+			}
+		}
 
 		protected override void OnParametersSet()
 		{
@@ -117,12 +183,18 @@ namespace TerminiWeb.Components.Common
 					ItemList = Items.Skip((currentPage - 1) * PageSize).Take(PageSize);
 				}
 
-				CalculatePagingNumbers(currentPage, RowCount ?? Items.Count());
+				CalculatePagingNumbers(currentPage, RowCount ?? (Items != null ? Items.Count() : 0));
 			}
 
 			if (EnableRowSelection)
 			{
-				enableSelectionCssClass = "table-hover";
+				enableSelectionCssClass = string.IsNullOrEmpty(CustomCssClass)
+					? "table-hover"
+					: $"{CustomCssClass} table-hover";
+			}
+			else
+			{
+				enableSelectionCssClass = CustomCssClass;
 			}
 
 			base.OnParametersSet();
@@ -137,10 +209,10 @@ namespace TerminiWeb.Components.Common
 			}
 			else
 			{
-				ItemList = Items.Skip((currentPage - 1) * PageSize).Take(PageSize);
+				ItemList = Items?.Skip((currentPage - 1) * PageSize).Take(PageSize);
 			}
 
-			CalculatePagingNumbers(currentPage, RowCount ?? Items.Count());
+			CalculatePagingNumbers(currentPage, RowCount ?? (Items != null ? Items.Count() : 0));
 		}
 
 		public async Task NavigateToPage(string direction)
@@ -174,9 +246,9 @@ namespace TerminiWeb.Components.Common
 		private int CalculatePagerItems()
 		{
 			int retVal = currentPage * PageSize;
-			if (retVal > (RowCount ?? Items.Count()))
+			if (retVal > (RowCount ?? (Items != null ? Items.Count() : 0)))
 			{
-				retVal = RowCount ?? Items.Count();
+				retVal = RowCount ?? (Items != null ? Items.Count() : 0);
 			}
 
 			return retVal;
@@ -188,7 +260,7 @@ namespace TerminiWeb.Components.Common
 			{
 				if (columnName != activeSortColumn)
 				{
-					ItemList = ItemList.OrderBy(x => x.GetType().GetProperty(columnName).GetValue(x, null)).ToList();
+					ItemList = ItemList.OrderBy(x => x?.GetType()?.GetProperty(columnName)?.GetValue(x, null)).ToList();
 					isSortedAscending = true;
 					activeSortColumn = columnName;
 				}
@@ -196,11 +268,11 @@ namespace TerminiWeb.Components.Common
 				{
 					if (isSortedAscending)
 					{
-						ItemList = ItemList.OrderByDescending(x => x.GetType().GetProperty(columnName).GetValue(x, null)).ToList();
+						ItemList = ItemList.OrderByDescending(x => x?.GetType()?.GetProperty(columnName)?.GetValue(x, null)).ToList();
 					}
 					else
 					{
-						ItemList = ItemList.OrderBy(x => x.GetType().GetProperty(columnName).GetValue(x, null)).ToList();
+						ItemList = ItemList.OrderBy(x => x?.GetType()?.GetProperty(columnName)?.GetValue(x, null)).ToList();
 					}
 					isSortedAscending = !isSortedAscending;
 				}
@@ -237,54 +309,73 @@ namespace TerminiWeb.Components.Common
 				}
 				else
 				{
-					pagingNumbers = (new[] { 1 }).Concat(Enumerable.Range(currentPage - middlePosition + 1, pagerSize - 2)).Concat(new[] {
-						totalPages }).ToArray();
+					pagingNumbers = (new[] { 1 }).Concat(Enumerable.Range(currentPage - middlePosition + 1, pagerSize - 2)).Concat(new[] { totalPages }).ToArray();
 				}
 			}
 		}
 
 		private void OnRowClick(TItem item)
 		{
-			if (EnableRowSelection)
+			if (!EnableRowSelection) return;
+
+			if (MultiSelectionEnabled)
 			{
+				if (SelectedItems.Contains(item))
+				{
+					SelectedItems.Remove(item);
+				}
+				else
+				{
+					SelectedItems.Add(item);
+				}
+
+				// Invoke setter for SelectedRowItems so that the parent component can access the selected items
+				SelectedRowItems = SelectedItems;
+			}
+			else
+			{
+				// Single selection mode
 				SelectedItems.Clear();
 				SelectedItems.Add(item);
-
 				SelectedRowItem = item;
 			}
 		}
 
 		private string GetRowSelectedClass(TItem item)
 		{
-			string retVal = string.Empty;
-			bool isRowSelected = false;
+			List<string> classes = new List<string>();
 
-			if (SelectedRowItem != null)
+			// Add custom class if provided
+			if (!string.IsNullOrEmpty(CustomCssClass))
 			{
-				TItem selectedItem = SelectedRowItem;
-				if (item != null)
-				{
-					object? selectedItemId = selectedItem?.GetType()?.GetProperty(RowSelectionIdentifierProperty)?.GetValue(selectedItem, null);
-					object? itemId = item?.GetType()?.GetProperty(RowSelectionIdentifierProperty)?.GetValue(item, null);
-
-					if (selectedItemId != null && itemId != null && selectedItemId == itemId)
-						isRowSelected = true;
-				}
+				classes.Add(CustomCssClass);
 			}
 
-			if ((EnableRowSelection || IgnoreEnableRowSelection) && (SelectedItems.Contains(item) || isRowSelected))
+			// Add selection class if applicable
+			if ((EnableRowSelection || IgnoreEnableRowSelection) && (SelectedItems.Contains(item) || IsItemSelected(item)))
 			{
-				retVal = "selected-row";
+				classes.Add("selected-row");
 			}
 
-			return retVal;
+			return string.Join(" ", classes);
+		}
+
+		// Helper method to check if item is selected
+		private bool IsItemSelected(TItem item)
+		{
+			if (SelectedRowItem == null || item == null) return false;
+
+			object? selectedItemId = SelectedRowItem.GetType()?.GetProperty(RowSelectionIdentifierProperty)?.GetValue(SelectedRowItem, null);
+			object? itemId = item.GetType()?.GetProperty(RowSelectionIdentifierProperty)?.GetValue(item, null);
+
+			return selectedItemId != null && itemId != null && selectedItemId == itemId;
 		}
 
 		private void OnInput(string filter, string property)
 		{
 			if (!string.IsNullOrEmpty(property))
 			{
-				var propertyInfo = FilterModel.GetType().GetProperty(property);
+				var propertyInfo = FilterModel?.GetType()?.GetProperty(property);
 				if (propertyInfo != null)
 				{
 					try
@@ -294,17 +385,17 @@ namespace TerminiWeb.Components.Common
 
 						if (isNullable)
 						{
-							propertyType = Nullable.GetUnderlyingType(propertyType);
+							propertyType = Nullable.GetUnderlyingType(propertyType) ?? propertyType;
 						}
 
-						object convertedValue = string.IsNullOrEmpty(filter) && isNullable ? null : Convert.ChangeType(filter, propertyType);
+						object? convertedValue = string.IsNullOrEmpty(filter) && isNullable ? null : Convert.ChangeType(filter, propertyType);
 
 						propertyInfo.SetValue(FilterModel, convertedValue);
 						columnFilterValues[property] = filter;
 					}
-					catch
+					catch (Exception ex)
 					{
-						// Ignore parsing error
+						Console.WriteLine($"Error caught on filter input: {ex.Message}");
 					}
 				}
 				else
@@ -318,6 +409,7 @@ namespace TerminiWeb.Components.Common
 		{
 			if (string.IsNullOrEmpty(property))
 				return string.Empty;
+
 			return columnFilterValues.TryGetValue(property, out var value) ? value : string.Empty;
 		}
 
