@@ -106,11 +106,9 @@ else
 		<GridColumn TItem="PlayerDto" Sortable="false" Alignment="Common.Enumerators.AlignOption.Right">
 			<Template Context="player">
 				<ContextMenu>
-					<ContextMenuItem Text="Edit" OnClick="async () => await EditPlayer(player)">
-						@Icons.Material.Filled.Edit
-					</ContextMenuItem>
-					<ContextMenuItem Text="Delete" Icon="@Icons.Material.Filled.Delete" OnClick="async () => await DeletePlayer(player)" />
-					<ContextMenuItem Text="View" Icon="@Icons.Material.Filled.Visibility" OnClick="async () => await ViewPlayer(player)" />
+					<ContextMenuItem Text="Edit" OnClick="async () => await EditPlayer(player)" />
+					<ContextMenuItem Text="Delete" OnClick="async () => await DeletePlayer(player)" />
+					<ContextMenuItem Text="View" OnClick="async () => await ViewPlayer(player)" />
 				</ContextMenu>
 			</Template>
 		</GridColumn>
