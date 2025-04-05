@@ -1,0 +1,64 @@
+﻿.modal-form {
+	padding: 24px;
+	width: 100%;
+	max-width: 500px;
+}
+
+.form-group {
+	margin-bottom: 1.5rem;
+	display: flex;
+	flex-direction: column;
+}
+
+	.form-group label {
+		font-size: 0.875rem;
+		margin-bottom: 0.5rem;
+		color: var(--mud-palette-text-primary);
+	}
+
+	.form-group input {
+		padding: 0.75rem;
+		border: 1px solid var(--mud-palette-lines-default);
+		border-radius: 4px;
+		font-size: 1rem;
+		transition: border-color 0.2s ease;
+		background-color: var(--mud-palette-background);
+		color: var(--mud-palette-text-primary);
+	}
+
+		.form-group input:focus {
+			outline: none;
+			border-color: var(--mud-palette-primary);
+			box-shadow: 0 0 0 1px var(--mud-palette-primary);
+		}
+
+.button-group {
+	display: flex;
+	justify-content: flex-end;
+	gap: 0.75rem;
+	margin-top: 2rem;
+}
+
+	.button-group button {
+		padding: 0.5rem 1.25rem;
+		border-radius: 4px;
+		font-weight: 500;
+		cursor: pointer;
+		transition: background-color 0.2s ease;
+	}
+
+		.button-group button:first-child {
+			background-color: var(--mud-palette-primary);
+			color: var(--mud-palette-primary-text);
+			border: none;
+		}
+
+		.button-group button:last-child {
+			background-color: transparent;
+			border: 1px solid var(--mud-palette-lines-default);
+			color: var(--mud-palette-text-primary);
+		}
+
+		.button-group button:hover {
+			opacity: 0.9;
+		}

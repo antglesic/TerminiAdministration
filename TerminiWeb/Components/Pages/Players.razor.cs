@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 using MudBlazor;
+using TerminiWeb.Components.Modals;
 using TerminiWeb.FilterModels;
 using TerminiWeb.Infrastructure.PlayerService;
 using TerminiWeb.Infrastructure.PlayerService.Dtos;
@@ -31,10 +32,12 @@ namespace TerminiWeb.Components.Pages
 		#region Injections
 
 		[Inject]
-		private IPlayerService _playerService { get; set; }
+		private IPlayerService? _playerService { get; set; }
 
 		[Inject]
-		private ILogger<Players> _logger { get; set; }
+		private ILogger<Players>? _logger { get; set; }
+
+		[Inject] IDialogService? _dialogService { get; set; }
 
 		#endregion
 
@@ -162,10 +165,18 @@ namespace TerminiWeb.Components.Pages
 			{
 				Console.WriteLine(data);
 				Console.WriteLine("Edit player called {0} with player: {1}", DateTime.Now.ToString(), data?.FullName ?? string.Empty);
+				var options = new DialogOptions { CloseOnEscapeKey = true };
+
+				if (_dialogService != null)
+				{
+					await _dialogService.ShowAsync<EditPlayerModal>($"Edit Player {data?.FullName}", options);
+				}
 			}
 			catch (Exception ex)
 			{
-				_logger.LogError($"Error in EditPlayer: {ex.Message}", ex);
+				if (_logger != null)
+					_logger.LogError($"Error in EditPlayer: {ex.Message}", ex);
+
 				throw;
 			}
 

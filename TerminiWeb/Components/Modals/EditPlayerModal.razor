@@ -1,0 +1,16 @@
+﻿<div class="modal-form">
+	<div class="form-group">
+		<label for="player-name">Name: </label>
+		<input id="player-name" type="text" @bind-value="@_newPlayerName">
+	</div>
+
+	<div class="form-group">
+		<label for="player-surname">Surname: </label>
+		<input id="player-surname" type="text" @bind-value="@_newPlayerSurname">
+	</div>
+
+	<div class="button-group">
+		<button @onclick="@Save">Save</button>
+		<button @onclick="@Close">Close</button>
+	</div>
+</div>
