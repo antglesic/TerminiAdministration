@@ -8,67 +8,6 @@
 }
 else
 {
-	<MudText HtmlTag="span">Item: @_selectedItemText</MudText>
-	<MudText>Selected items @(_selectedPlayer != null ? 1 : 0): @(_selectedPlayer == null ? "" : _selectedItemText)</MudText>
-
-	<MudTable @ref="_table" T="PlayerDto" Items="@_players" MultiSelection="true" Hover="true"
-			  @bind-SelectedItem="@_selectedPlayer" @bind-SelectedItems="@_selectedItems" OnRowClick="@OnRowClick" SelectOnRowClick="@_selectOnRowClick"
-			  RowsPerPage="@_pageSize" CurrentPage="@_pageNumber" CurrentPageChanged="CurrentPageNumberChanged" RowsPerPageChanged="CurrentPageSizeChanged"
-			  Filter="new Func<PlayerDto, bool>(FilterFunction)">
-
-		<ToolBarContent>
-			<MudText Typo="Typo.h6">Players list</MudText>
-			<MudSpacer />
-			<MudTextField T="string" ValueChanged="@(s => OnSearch(s))" Placeholder="Search" Adornment="Adornment.Start"
-						  AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
-		</ToolBarContent>
-
-		<HeaderContent>
-			<MudTh>Name</MudTh>
-			<MudTh>Surname</MudTh>
-			<MudTh>Sex</MudTh>
-			<MudTh>Foot</MudTh>
-		</HeaderContent>
-
-		<RowTemplate>
-			<MudTd DataLabel="Name">@context.Name</MudTd>
-			<MudTd DataLabel="Surname">@context.Surname</MudTd>
-			<MudTd DataLabel="Sex">@context.Sex</MudTd>
-			<MudTd DataLabel="Foot">@context.Foot</MudTd>
-		</RowTemplate>
-
-		<NoRecordsContent>
-			<MudText>No matching records found</MudText>
-		</NoRecordsContent>
-
-		<LoadingContent>
-			<MudText>Loading...</MudText>
-		</LoadingContent>
-
-		<PagerContent>
-			<MudTablePager PageSizeOptions="new int[] { 1, 2, 5, 10, 25, 50, 100 }" />
-		</PagerContent>
-
-		<FooterContent>
-			<MudTd colspan="5">Select All</MudTd>
-		</FooterContent>
-
-	</MudTable>
-
-	if (_selectedPlayer != null)
-	{
-		<MudPaper Class="pa-4 mt-4">
-			<MudText Typo="Typo.h6">Selected Item</MudText>
-			<MudItem>@($"Name: {_selectedPlayer.Name} => Surname: {_selectedPlayer.Surname}")</MudItem>
-		</MudPaper>
-	}
-	else
-	{
-		<MudText Typo="Typo.h6"> No Item was selected! </MudText>
-	}
-
-	<MudText HtmlTag="span">Selected items: @(_selectedItems == null ? "" : string.Join(", ", _selectedItems.OrderBy(x => x.Id).Select(x => $"{x.Name} {x.Surname}")))</MudText>
-
 	<DropDown T="PlayerDto"
 			  Items="@_players"
 			  DisplayProperty="FullName"
@@ -112,6 +51,5 @@ else
 				</ContextMenu>
 			</Template>
 		</GridColumn>
-
 	</DataGrid>
 }

@@ -1,4 +1,4 @@
-﻿using System.Data.Entity;
+﻿using Microsoft.EntityFrameworkCore;
 using Serilog;
 using TerminiDataAccess.TerminiContext;
 using TerminiDataAccess.TerminiContext.Models;
@@ -97,9 +97,16 @@ namespace TerminiService.TerminService
 
 			try
 			{
-				IEnumerable<TerminDto> termins = await _terminiContext.Termin
+				// Fetch the data from the database first
+				var termins = await _terminiContext.Termin
 					.AsNoTracking()
 					.Where(x => x.Active)
+					.Include(x => x.TerminPlayers) // Include related data
+					.ThenInclude(tp => tp.Player) // Include nested related data
+					.ToListAsync();
+
+				// Map the data to DTOs after materialization
+				IEnumerable<TerminDto> terminsList = termins
 					.Select(x => new TerminDto()
 					{
 						Id = x.Id,
@@ -107,24 +114,24 @@ namespace TerminiService.TerminService
 						DateCreated = x.DateCreated,
 						ScheduledDate = x.ScheduledDate,
 						StartTime = x.StartTime,
+						DurationMinutes = x.DurationMinutes,
 						Players = x.TerminPlayers
-								.Where(p => p.Active)
-								.Select(p => new PlayerDto()
-								{
-									Id = p.Id,
-									Active = p.Active,
-									DateCreated = p.DateCreated,
-									Name = p.Player.Name ?? string.Empty,
-									Surname = p.Player.Surname ?? string.Empty,
-									Sex = p.Player.Sex ?? string.Empty,
-									Foot = p.Player.Foot ?? string.Empty
-								})
-					})
-					.ToListAsync();
+							.Where(p => p.Active)
+							.Select(p => new PlayerDto()
+							{
+								Id = p.Id,
+								Active = p.Active,
+								DateCreated = p.DateCreated,
+								Name = p.Player.Name ?? string.Empty,
+								Surname = p.Player.Surname ?? string.Empty,
+								Sex = p.Player.Sex ?? string.Empty,
+								Foot = p.Player.Foot ?? string.Empty
+							})
+					});
 
-				if (termins != null && termins.Any())
+				if (terminsList != null && terminsList.Any())
 				{
-					response.Termins = termins;
+					response.Termins = terminsList;
 					response.Success = true;
 				}
 				else

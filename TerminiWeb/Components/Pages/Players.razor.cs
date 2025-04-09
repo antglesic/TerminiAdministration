@@ -16,14 +16,6 @@ namespace TerminiWeb.Components.Pages
 		private IEnumerable<PlayerDto> _players;
 		private int _pageSize = 5;
 		private int _pageNumber = 1;
-		private int _totalItems;
-		private string _searchString = null;
-		private PlayerDto? _selectedPlayer;
-
-		private bool _selectOnRowClick = true;
-		private MudTable<PlayerDto>? _table;
-		private string _selectedItemText = "No row clicked";
-		private HashSet<PlayerDto>? _selectedItems;
 		private int[] _pageSizeOptions = new int[] { 5, 10, 20 };
 		private PlayerFilterModel _filterModel = new PlayerFilterModel();
 
@@ -69,66 +61,21 @@ namespace TerminiWeb.Components.Pages
 				if (response != null && response.Players != null && response.Players.Any())
 				{
 					_players = response.Players;
-					_totalItems = _players.Count();
 				}
 			}
 			catch (Exception ex)
 			{
-				_logger.LogError(ex, "Players.razor.cs.GetPlayers() - Exception message: {Message}", ex.Message);
+				_logger?.LogError(ex, "Players.razor.cs.GetPlayers() - Exception message: {Message}", ex.Message);
 				return false;
 			}
 
 			return true;
 		}
 
-		private void CurrentPageNumberChanged(int page)
-		{
-			_pageNumber = page;
-		}
-
-		private void CurrentPageSizeChanged(int size)
-		{
-			_pageSize = size;
-		}
-
 		private async Task FilteredSearch()
 		{
 			await GetPlayers(_filterModel);
 			StateHasChanged();
-		}
-
-		void OnRowClick(TableRowClickEventArgs<PlayerDto> args)
-		{
-			if (args.Item != null)
-			{
-				_selectedItemText = $"{args.Item.Name} {args.Item.Surname}";
-			}
-		}
-
-		private void OnSearch(string text)
-		{
-			_searchString = text;
-
-			if (_table != null)
-				_table.ReloadServerData();
-		}
-
-		private bool FilterFunction(PlayerDto player) => FilterFunc(player, _searchString);
-
-		private bool FilterFunc(PlayerDto player, string searchString)
-		{
-			if (string.IsNullOrEmpty(searchString))
-				return true;
-			if (player.Name.ToString().Contains(searchString, StringComparison.OrdinalIgnoreCase))
-				return true;
-			if (player.Surname.ToString().Contains(searchString, StringComparison.OrdinalIgnoreCase))
-				return true;
-			if (player.Sex.ToString().Contains(searchString, StringComparison.OrdinalIgnoreCase))
-				return true;
-			if (player.Foot.ToString().Contains(searchString, StringComparison.OrdinalIgnoreCase))
-				return true;
-
-			return false;
 		}
 
 		public void OnSelectedItemChanged(PlayerDto item)
