@@ -2,6 +2,6 @@
 {
 	public class PlayerListResponseDto
 	{
-		public IEnumerable<PlayerDto> Players { get; set; }
+		public IEnumerable<PlayerDto>? Players { get; set; } = new List<PlayerDto>();
 	}
 }
