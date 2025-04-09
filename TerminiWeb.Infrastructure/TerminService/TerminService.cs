@@ -96,6 +96,25 @@ namespace TerminiWeb.Infrastructure.TerminService
 			return response;
 		}
 
+		public async Task<CreateTerminResponse> CreateTermin(CreateTerminRequest request)
+		{
+			CreateTerminResponse response = new CreateTerminResponse()
+			{
+				Request = request
+			};
+
+			try
+			{
+				//TODO: Add HttpPost to send and create the termin
+			}
+			catch (Exception ex)
+			{
+
+			}
+
+			return response;
+		}
+
 		#endregion
 
 	}

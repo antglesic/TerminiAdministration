@@ -10,6 +10,12 @@
 }
 else
 {
+	<div class="mb-3 d-flex justify-content-end">
+		<button class="btn-moj" @onclick="@CreateNewTermin">
+			<i class="fas fa-plus me-2"></i>Add New
+		</button>
+	</div>
+
 	<DataGrid TItem="TerminDto"
 			  Items="@_termins"
 			  Sortable="true"

@@ -1,0 +1,40 @@
+﻿@page "/termins/create"
+
+@using TerminiWeb.Infrastructure.PlayerService.Dtos
+@using TerminiWeb.Components.Common
+
+<div class="create-termin-form">
+	<h3 class="mb-4">Create Termin</h3>
+
+	<div class="form-row">
+		<div class="form-group">
+			<MudDatePicker @bind-Date="@_scheduledDate" Label="Scheduled Date" />
+		</div>
+		<div class="form-group">
+			<MudTimePicker @bind-Time="@_startTime" Label="Start time" />
+		</div>
+	</div>
+
+	<div class="form-row">
+		<div class="form-group">
+			<MudNumericField @bind-Value="@_durationMinutes" Label="Duration (minutes)" />
+		</div>
+	</div>
+
+	<div class="form-row">
+		<div class="form-group">
+			<MultiSelect T="PlayerDto"
+						 Items="@_players"
+						 DisplayProperty="FullName"
+						 IdentifierProperty="Id"
+						 ValuesChanged="OnSelectedItemsChanged"
+						 CanSearch="true"
+						 SearchPlaceHolder="Search..."
+						 Width="100%" />
+		</div>
+	</div>
+
+	<div class="actions">
+		<MudButton Color="Color.Primary" OnClick="@HandleSubmit">Create Termin</MudButton>
+	</div>
+</div>

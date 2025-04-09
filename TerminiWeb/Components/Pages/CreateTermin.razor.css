@@ -1,0 +1,22 @@
+﻿.create-termin-form {
+	max-width: 400px;
+	margin: 0 auto;
+	padding: 2rem;
+}
+
+.form-row {
+	display: flex;
+	gap: 1rem;
+	margin-bottom: 1rem;
+	align-items: flex-start;
+}
+
+.form-group {
+	flex: 1;
+	min-width: 180px;
+}
+
+.actions {
+	margin-top: 2rem;
+	text-align: right;
+}

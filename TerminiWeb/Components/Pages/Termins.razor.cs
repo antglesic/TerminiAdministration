@@ -17,7 +17,11 @@ namespace TerminiWeb.Components.Pages
 		[Inject]
 		private ILogger<Players>? _logger { get; set; }
 
-		[Inject] IDialogService? _dialogService { get; set; }
+		[Inject] 
+		private IDialogService? _dialogService { get; set; }
+
+		[Inject]
+		private NavigationManager? NavigationManager { get; set; }
 
 		#endregion
 
@@ -109,6 +113,11 @@ namespace TerminiWeb.Components.Pages
 		{
 			Console.WriteLine("View termin {0} ", data?.Id.ToString() ?? string.Empty);
 			await InvokeAsync(StateHasChanged);
+		}
+
+		private void CreateNewTermin()
+		{
+			NavigationManager?.NavigateTo("/termins/create");
 		}
 
 		#endregion
