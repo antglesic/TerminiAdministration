@@ -1,0 +1,37 @@
+﻿@page "/termins"
+
+@using TerminiWeb.Infrastructure.PlayerService.Dtos
+@using TerminiWeb.Infrastructure.TerminService.Dtos
+@using TerminiWeb.Components.Common
+
+@if (_termins == null)
+{
+	<LoadIndicator />
+}
+else
+{
+	<DataGrid TItem="TerminDto"
+			  Items="@_termins"
+			  Sortable="true"
+			  PageSizeOptions="@_pageSizeOptions"
+			  PageNumber="@_pageNumber"
+			  PageSize="@_pageSize"
+			  Filterable="true"
+			  FilterModel="@_filterModel"
+			  OnSearch="@FilteredSearch"
+			  RowSelectionIdentifierProperty="Id"
+			  EnableRowSelection="true">
+		<GridColumn TItem="TerminDto" Property="ScheduledDate" Caption="Scheduled Date" Sortable="false" Filterable="true" FilterModelProperty="ScheduledDateFilter" />
+		<GridColumn TItem="TerminDto" Property="StartTime" Caption="Start Time" Sortable="false" Filterable="true" FilterModelProperty="StartTimeFilter" />
+		<GridColumn TItem="TerminDto" Property="DurationMinutes" Caption="Duration (min)" Sortable="true" Filterable="true" FilterModelProperty="DurationMinutesFilter" />
+		<GridColumn TItem="TerminDto" Sortable="false" Alignment="Common.Enumerators.AlignOption.Right">
+			<Template Context="termin">
+				<ContextMenu>
+					<ContextMenuItem Text="Edit" OnClick="async () => await EditTermin(termin)" />
+					<ContextMenuItem Text="Delete" OnClick="async () => await DeleteTermin(termin)" />
+					<ContextMenuItem Text="View" OnClick="async () => await ViewTermin(termin)" />
+				</ContextMenu>
+			</Template>
+		</GridColumn>
+	</DataGrid>
+}
