@@ -11,15 +11,22 @@ namespace TerminiDataAccess.TerminiContext
     public partial class TerminiContextModel
     {
         private TerminiContextModel()
-            : base(skipDetectChanges: false, modelId: new Guid("c7794aff-7b53-4ef6-8c1e-26e40e7a6d83"), entityTypeCount: 1)
+            : base(skipDetectChanges: false, modelId: new Guid("005e9d14-aa31-4304-b5c4-bfbd234c9d32"), entityTypeCount: 3)
         {
         }
 
         partial void Initialize()
         {
             var player = PlayerEntityType.Create(this);
+            var termin = TerminEntityType.Create(this);
+            var terminPlayers = TerminPlayersEntityType.Create(this);
+
+            TerminPlayersEntityType.CreateForeignKey1(terminPlayers, player);
+            TerminPlayersEntityType.CreateForeignKey2(terminPlayers, termin);
 
             PlayerEntityType.CreateAnnotations(player);
+            TerminEntityType.CreateAnnotations(termin);
+            TerminPlayersEntityType.CreateAnnotations(terminPlayers);
 
             AddAnnotation("ProductVersion", "9.0.2");
             AddAnnotation("Relational:MaxIdentifierLength", 128);

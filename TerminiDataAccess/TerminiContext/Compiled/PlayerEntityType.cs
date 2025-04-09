@@ -20,6 +20,7 @@ namespace TerminiDataAccess.TerminiContext
                 typeof(Player),
                 baseEntityType,
                 propertyCount: 7,
+                navigationCount: 1,
                 keyCount: 1);
 
             var id = runtimeEntityType.AddProperty(
