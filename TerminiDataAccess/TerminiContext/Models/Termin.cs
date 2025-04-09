@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace TerminiDataAccess.TerminiContext.Models;
 
-public partial class Player
+public partial class Termin
 {
     public int Id { get; set; }
 
@@ -11,13 +11,11 @@ public partial class Player
 
     public DateTime DateCreated { get; set; }
 
-    public string? Name { get; set; }
+    public DateOnly ScheduledDate { get; set; }
 
-    public string? Surname { get; set; }
+    public TimeOnly StartTime { get; set; }
 
-    public string? Foot { get; set; }
-
-    public string? Sex { get; set; }
+    public int DurationMinutes { get; set; }
 
     public virtual ICollection<TerminPlayers> TerminPlayers { get; set; } = new List<TerminPlayers>();
 }
