@@ -1,6 +1,7 @@
 ﻿using System.Data.Entity;
 using Serilog;
 using TerminiDataAccess.TerminiContext;
+using TerminiDataAccess.TerminiContext.Models;
 using TerminiService.PlayerService.Dtos;
 using TerminiService.TerminService.Dtos;
 using TerminiService.TerminService.Models;
@@ -48,6 +49,7 @@ namespace TerminiService.TerminService
 							DateCreated = x.DateCreated,
 							ScheduledDate = x.ScheduledDate,
 							StartTime = x.StartTime,
+							DurationMinutes = x.DurationMinutes,
 							Players = x.TerminPlayers
 								.Where(p => p.Active)
 								.Select(p => new PlayerDto()
@@ -136,6 +138,100 @@ namespace TerminiService.TerminService
 					.ForContext("GetTermins", request.RequestToken, true)
 					.Error(ex, ex.Message);
 				response.Message = $"An error occurred while processing your request. Could not get any Termin with the request: {request}";
+			}
+
+			return response;
+		}
+
+		public async Task<CreateTerminResponse> CreateTermin(CreateTerminRequest request)
+		{
+			CreateTerminResponse response = new CreateTerminResponse()
+			{
+				Request = request
+			};
+
+			try
+			{
+				if (request != null)
+				{
+					Termin newTermin = new Termin()
+					{
+						ScheduledDate = request.CreateTermin.ScheduleDate,
+						StartTime = request.CreateTermin.StartTime,
+						DurationMinutes = request.CreateTermin.DurationMinutes
+					};
+
+					_terminiContext.Termin.Add(newTermin);
+					await _terminiContext.SaveChangesAsync();
+
+					if (newTermin.Id > 0 && request.CreateTermin.Players != null && request.CreateTermin.Players.Any())
+					{
+						List<TerminPlayers> listOfPlayers = new List<TerminPlayers>();
+
+						foreach (PlayerDto player in request.CreateTermin.Players)
+						{
+							TerminPlayers newTerminPlayer = new TerminPlayers()
+							{
+								TerminId = newTermin.Id,
+								PlayerId = player.Id
+							};
+
+							listOfPlayers.Add(newTerminPlayer);
+						}
+
+						if (listOfPlayers.Any())
+						{
+							await _terminiContext.TerminPlayers.AddRangeAsync(listOfPlayers);
+							await _terminiContext.SaveChangesAsync();
+
+							if (listOfPlayers.All(p => p.Id > 0))
+							{
+								TerminDto termin = await _terminiContext.Termin
+									.AsNoTracking()
+									.Where(x => x.Active && x.Id == newTermin.Id)
+									.Select(x => new TerminDto()
+									{
+										Id = x.Id,
+										Active = x.Active,
+										DateCreated = x.DateCreated,
+										ScheduledDate = x.ScheduledDate,
+										StartTime = x.StartTime,
+										DurationMinutes = x.DurationMinutes,
+										Players = x.TerminPlayers
+											.Where(p => p.Active)
+											.Select(p => new PlayerDto()
+											{
+												Id = p.Id,
+												Active = p.Active,
+												DateCreated = p.DateCreated,
+												Name = p.Player.Name ?? string.Empty,
+												Surname = p.Player.Surname ?? string.Empty,
+												Sex = p.Player.Sex ?? string.Empty,
+												Foot = p.Player.Foot ?? string.Empty
+											})
+									})
+									.FirstOrDefaultAsync();
+
+								if (termin != null)
+								{
+									response.Success = true;
+									response.Termin = termin;
+								}
+							}
+						}
+					}
+					else
+					{
+						response.Message = "No termin with players were created!";
+					}
+				}
+			}
+			catch (Exception ex)
+			{
+				_logger
+					.ForContext("CreateTermin", request.RequestToken, true)
+					.Error(ex, ex.Message);
+				response.Message = $"An error occurred while processing your request. Could not get create a Termin: {request}";
 			}
 
 			return response;

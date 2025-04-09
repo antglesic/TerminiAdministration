@@ -9,6 +9,7 @@ namespace TerminiWeb.Infrastructure.TerminService.Dtos
 		public DateTime DateCreated { get; set; }
 		public DateOnly ScheduledDate { get; set; }
 		public TimeOnly StartTime { get; set; }
+		public int DurationMinutes { get; set; }
 		public IEnumerable<PlayerDto>? Players { get; set; } = new List<PlayerDto>();
 	}
 }

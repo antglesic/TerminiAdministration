@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using TerminiAPI.ViewModels;
 using TerminiService.TerminService;
+using TerminiService.TerminService.Dtos;
 using TerminiService.TerminService.Models;
 
 namespace TerminiAPI.Controllers
@@ -56,6 +58,38 @@ namespace TerminiAPI.Controllers
 				return BadRequest(response.Message);
 
 			return Ok(response);
+		}
+
+		[HttpPost("CreateTermin")]
+		[ProducesResponseType(typeof(CreateTerminResponse), StatusCodes.Status200OK)]
+		[ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
+		[ProducesResponseType(typeof(void), StatusCodes.Status403Forbidden)]
+		public async Task<ActionResult<CreateTerminResponse>> CreateTermin([FromBody] CreateTerminViewModel createTerminViewModel)
+		{
+			if (createTerminViewModel != null)
+			{
+				CreateTerminDto createTermin = new CreateTerminDto()
+				{
+					ScheduleDate = createTerminViewModel.ScheduleDate,
+					StartTime = createTerminViewModel.StartTime,
+					DurationMinutes = createTerminViewModel.DurationMinutes,
+					Players = createTerminViewModel.Players
+				};
+
+				CreateTerminRequest request = new CreateTerminRequest();
+				request.CreateTermin = createTermin;
+
+				CreateTerminResponse response = await _terminService.CreateTermin(request);
+
+				if (!response.Success)
+					return BadRequest(response.Message);
+
+				return Ok(response);
+			}
+			else
+			{
+				return BadRequest("CreateTerminViewModel is null.");
+			}
 		}
 
 		#endregion
