@@ -163,6 +163,7 @@ namespace TerminiService.TerminService
 				{
 					Termin newTermin = new Termin()
 					{
+						Active = true,
 						ScheduledDate = request.CreateTermin.ScheduleDate,
 						StartTime = request.CreateTermin.StartTime,
 						DurationMinutes = request.CreateTermin.DurationMinutes
@@ -179,6 +180,7 @@ namespace TerminiService.TerminService
 						{
 							TerminPlayers newTerminPlayer = new TerminPlayers()
 							{
+								Active = true,
 								TerminId = newTermin.Id,
 								PlayerId = player.Id
 							};
