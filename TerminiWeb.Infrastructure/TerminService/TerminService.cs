@@ -96,6 +96,59 @@ namespace TerminiWeb.Infrastructure.TerminService
 			return response;
 		}
 
+		public async Task<CreateTerminResponse> CreateTermin(CreateTerminRequest request)
+		{
+			CreateTerminResponse response = new CreateTerminResponse()
+			{
+				Request = request
+			};
+
+			try
+			{
+				string apiUrl = $"{_apiEndpointSettings.TerminiApiBaseUrl}/{_controllerEndpoint}/CreateTermin";
+				_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", ExternalServicesHelper.CreateToken());
+
+				var content = JsonSerializer.Serialize(request.CreateTermin, _jsonSerializerOptions);
+				var bodyContent = new StringContent(content, System.Text.Encoding.UTF8, "application/json");
+
+				using (HttpResponseMessage responseContent = await _httpClient.PostAsync(apiUrl, bodyContent))
+				{
+					if (responseContent.IsSuccessStatusCode)
+					{
+						Stream responseStream = await responseContent.Content.ReadAsStreamAsync();
+
+						if (responseStream != null && responseStream.Length > 0)
+						{
+							TerminDto? createdTermin = await JsonSerializer.DeserializeAsync<TerminDto>(responseStream, _jsonSerializerOptions);
+
+							if (createdTermin != null)
+							{
+								response.Termin = createdTermin;
+								response.Success = true;
+							}
+							else
+							{
+								response.Message = "Failed to deserialize created termin";
+							}
+						}
+					}
+					else
+					{
+						response.Message = $"Failed to create termin. Status: {responseContent.StatusCode}";
+					}
+				}
+			}
+			catch (Exception ex)
+			{
+				_logger
+					.ForContext("CreateTermin", request.RequestToken, true)
+					.Error(ex, ex.Message);
+				throw;
+			}
+
+			return response;
+		}
+
 		#endregion
 
 	}
