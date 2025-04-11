@@ -17,7 +17,7 @@ namespace TerminiWeb.Components.Pages
 		[Inject]
 		private ILogger<Players>? _logger { get; set; }
 
-		[Inject] 
+		[Inject]
 		private IDialogService? _dialogService { get; set; }
 
 		[Inject]
@@ -112,6 +112,12 @@ namespace TerminiWeb.Components.Pages
 		private async Task ViewTermin(TerminDto data)
 		{
 			Console.WriteLine("View termin {0} ", data?.Id.ToString() ?? string.Empty);
+			await InvokeAsync(StateHasChanged);
+		}
+
+		private async Task FinishTermin(TerminDto data)
+		{
+			Console.WriteLine("Finish termin {0} ", data?.Id.ToString() ?? string.Empty);
 			await InvokeAsync(StateHasChanged);
 		}
 

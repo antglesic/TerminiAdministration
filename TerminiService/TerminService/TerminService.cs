@@ -50,6 +50,7 @@ namespace TerminiService.TerminService
 							ScheduledDate = x.ScheduledDate,
 							StartTime = x.StartTime,
 							DurationMinutes = x.DurationMinutes,
+							IsFinished = x.IsFinished,
 							Players = x.TerminPlayers
 								.Where(p => p.Active)
 								.Select(p => new PlayerDto()
@@ -60,7 +61,8 @@ namespace TerminiService.TerminService
 									Name = p.Player.Name ?? string.Empty,
 									Surname = p.Player.Surname ?? string.Empty,
 									Sex = p.Player.Sex ?? string.Empty,
-									Foot = p.Player.Foot ?? string.Empty
+									Foot = p.Player.Foot ?? string.Empty,
+									Rating = p.PlayerRating ?? p.Player.Rating
 								})
 						})
 						.FirstOrDefaultAsync();
@@ -115,6 +117,7 @@ namespace TerminiService.TerminService
 						ScheduledDate = x.ScheduledDate,
 						StartTime = x.StartTime,
 						DurationMinutes = x.DurationMinutes,
+						IsFinished = x.IsFinished,
 						Players = x.TerminPlayers
 							.Where(p => p.Active)
 							.Select(p => new PlayerDto()
@@ -125,7 +128,8 @@ namespace TerminiService.TerminService
 								Name = p.Player.Name ?? string.Empty,
 								Surname = p.Player.Surname ?? string.Empty,
 								Sex = p.Player.Sex ?? string.Empty,
-								Foot = p.Player.Foot ?? string.Empty
+								Foot = p.Player.Foot ?? string.Empty,
+								Rating = p.PlayerRating ?? p.Player.Rating
 							})
 					});
 

@@ -19,5 +19,7 @@ public partial class Player
 
     public string? Sex { get; set; }
 
+    public int? Rating { get; set; }
+
     public virtual ICollection<TerminPlayers> TerminPlayers { get; set; } = new List<TerminPlayers>();
 }

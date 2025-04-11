@@ -17,5 +17,7 @@ public partial class Termin
 
     public int DurationMinutes { get; set; }
 
+    public bool? IsFinished { get; set; }
+
     public virtual ICollection<TerminPlayers> TerminPlayers { get; set; } = new List<TerminPlayers>();
 }

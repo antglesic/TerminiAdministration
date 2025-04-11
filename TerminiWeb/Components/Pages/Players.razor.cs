@@ -53,6 +53,7 @@ namespace TerminiWeb.Components.Pages
 			request.Name = filter.Name;
 			request.Surname = filter.Surname;
 			request.FullName = filter.FullName;
+			request.PlayerRating = filter.PlayerRating;
 
 			try
 			{

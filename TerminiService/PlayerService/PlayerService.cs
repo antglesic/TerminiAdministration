@@ -57,6 +57,10 @@ namespace TerminiService.PlayerService
 								)
 							)
 						)
+						&&
+						(
+							request.PlayerRating == null || (p.Rating == request.PlayerRating)
+						)
 					)
 					.Select(p => new PlayerDto
 					{
@@ -66,7 +70,8 @@ namespace TerminiService.PlayerService
 						Name = p.Name ?? string.Empty,
 						Surname = p.Surname ?? string.Empty,
 						Sex = p.Sex ?? string.Empty,
-						Foot = p.Foot ?? string.Empty
+						Foot = p.Foot ?? string.Empty,
+						Rating = p.Rating
 					})
 					.TagWith("PlayerService.GetPlayersList")
 					.ToListAsync();
