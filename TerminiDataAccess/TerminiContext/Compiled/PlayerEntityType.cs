@@ -19,7 +19,7 @@ namespace TerminiDataAccess.TerminiContext
                 "TerminiDataAccess.TerminiContext.Models.Player",
                 typeof(Player),
                 baseEntityType,
-                propertyCount: 7,
+                propertyCount: 8,
                 navigationCount: 1,
                 keyCount: 1);
 
@@ -73,6 +73,14 @@ namespace TerminiDataAccess.TerminiContext
                 maxLength: 255,
                 unicode: false);
             name.AddAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.None);
+
+            var rating = runtimeEntityType.AddProperty(
+                "Rating",
+                typeof(int?),
+                propertyInfo: typeof(Player).GetProperty("Rating", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly),
+                fieldInfo: typeof(Player).GetField("<Rating>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly),
+                nullable: true);
+            rating.AddAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.None);
 
             var sex = runtimeEntityType.AddProperty(
                 "Sex",

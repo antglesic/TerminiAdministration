@@ -10,6 +10,7 @@ namespace TerminiService.TerminService.Dtos
 		public DateOnly ScheduledDate { get; set; }
 		public TimeOnly StartTime { get; set; }
 		public int DurationMinutes { get; set; }
+		public bool? IsFinished { get; set; }
 		public IEnumerable<PlayerDto>? Players { get; set; } = new List<PlayerDto>();
 	}
 }

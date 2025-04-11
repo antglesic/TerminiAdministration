@@ -30,6 +30,20 @@ else
 		<GridColumn TItem="TerminDto" Property="ScheduledDate" Caption="Scheduled Date" Sortable="false" Filterable="true" FilterModelProperty="ScheduledDateFilter" />
 		<GridColumn TItem="TerminDto" Property="StartTime" Caption="Start Time" Sortable="false" Filterable="true" FilterModelProperty="StartTimeFilter" />
 		<GridColumn TItem="TerminDto" Property="DurationMinutes" Caption="Duration (min)" Sortable="true" Filterable="true" FilterModelProperty="DurationMinutesFilter" />
+		<GridColumn TItem="TerminDto" Property="WasPlayed" Caption="" Sortable="false" Filterable="false">
+			<Template Context="termin">
+				<MudButton Disabled="@((termin.IsFinished != null && termin.IsFinished == true) || !termin.WasPlayed)" Color="Color.Primary" Variant="Variant.Text" OnClick="@(() => FinishTermin(termin))">
+					@if (termin.WasPlayed)
+					{
+						<i class="fas fa-check"></i>
+					}
+					else
+					{
+						<i class="fas fa-times"></i>
+					}
+				</MudButton>
+			</Template>
+		</GridColumn>
 		<GridColumn TItem="TerminDto" Sortable="false" Alignment="Common.Enumerators.AlignOption.Right">
 			<Template Context="termin">
 				<ContextMenu>

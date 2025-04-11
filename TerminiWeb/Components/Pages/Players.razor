@@ -41,7 +41,8 @@ else
 			  EnableRowSelection="true">
 		<GridColumn TItem="PlayerDto" Property="Name" Caption="Name" Sortable="false" Filterable="true" FilterModelProperty="Name" />
 		<GridColumn TItem="PlayerDto" Property="Surname" Caption="Surname" Sortable="false" Filterable="true" FilterModelProperty="Surname" />
-		<GridColumn TItem="PlayerDto" Property="FullName" Caption="FullName" Sortable="true" Filterable="true" FilterModelProperty="FullName" />
+		<GridColumn TItem="PlayerDto" Property="FullName" Caption="Full Name" Sortable="true" Filterable="true" FilterModelProperty="FullName" />
+		<GridColumn TItem="PlayerDto" Property="Rating" Caption="Player rating" Sortable="true" Filterable="true" FilterModelProperty="PlayerRating"></GridColumn>
 		<GridColumn TItem="PlayerDto" Sortable="false" Alignment="Common.Enumerators.AlignOption.Right">
 			<Template Context="player">
 				<ContextMenu>

@@ -9,6 +9,7 @@
 		public string Surname { get; set; } = string.Empty;
 		public string Sex { get; set; } = string.Empty;
 		public string Foot { get; set; } = string.Empty;
+		public int? Rating { get; set; }
 		public string FullName
 		{
 			get

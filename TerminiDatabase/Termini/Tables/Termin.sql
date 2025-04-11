@@ -5,8 +5,11 @@
     [ScheduledDate]   DATE     NOT NULL,
     [StartTime]       TIME (7) NOT NULL,
     [DurationMinutes] INT      NOT NULL,
+    [IsFinished]      BIT      NULL,
     CONSTRAINT [PK_Termini_Termin_Id] PRIMARY KEY CLUSTERED ([Id] ASC)
 );
+
+
 
 
 GO

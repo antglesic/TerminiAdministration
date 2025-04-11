@@ -19,7 +19,7 @@ namespace TerminiDataAccess.TerminiContext
                 "TerminiDataAccess.TerminiContext.Models.Termin",
                 typeof(Termin),
                 baseEntityType,
-                propertyCount: 6,
+                propertyCount: 7,
                 navigationCount: 1,
                 namedIndexCount: 1,
                 keyCount: 1);
@@ -62,6 +62,14 @@ namespace TerminiDataAccess.TerminiContext
                 fieldInfo: typeof(Termin).GetField("<DurationMinutes>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly),
                 sentinel: 0);
             durationMinutes.AddAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.None);
+
+            var isFinished = runtimeEntityType.AddProperty(
+                "IsFinished",
+                typeof(bool?),
+                propertyInfo: typeof(Termin).GetProperty("IsFinished", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly),
+                fieldInfo: typeof(Termin).GetField("<IsFinished>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly),
+                nullable: true);
+            isFinished.AddAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.None);
 
             var scheduledDate = runtimeEntityType.AddProperty(
                 "ScheduledDate",

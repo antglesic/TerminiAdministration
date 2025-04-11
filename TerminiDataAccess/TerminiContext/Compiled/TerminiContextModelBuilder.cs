@@ -11,7 +11,7 @@ namespace TerminiDataAccess.TerminiContext
     public partial class TerminiContextModel
     {
         private TerminiContextModel()
-            : base(skipDetectChanges: false, modelId: new Guid("005e9d14-aa31-4304-b5c4-bfbd234c9d32"), entityTypeCount: 3)
+            : base(skipDetectChanges: false, modelId: new Guid("aa6d3f25-a2f4-40fa-9141-dc14a2e0fb00"), entityTypeCount: 3)
         {
         }
 
@@ -28,7 +28,7 @@ namespace TerminiDataAccess.TerminiContext
             TerminEntityType.CreateAnnotations(termin);
             TerminPlayersEntityType.CreateAnnotations(terminPlayers);
 
-            AddAnnotation("ProductVersion", "9.0.2");
+            AddAnnotation("ProductVersion", "9.0.4");
             AddAnnotation("Relational:MaxIdentifierLength", 128);
             AddAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
         }

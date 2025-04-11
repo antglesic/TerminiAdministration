@@ -20,7 +20,7 @@ namespace TerminiDataAccess.TerminiContext
                 "TerminiDataAccess.TerminiContext.Models.TerminPlayers",
                 typeof(TerminPlayers),
                 baseEntityType,
-                propertyCount: 5,
+                propertyCount: 6,
                 navigationCount: 2,
                 foreignKeyCount: 2,
                 namedIndexCount: 3,
@@ -64,6 +64,14 @@ namespace TerminiDataAccess.TerminiContext
                 fieldInfo: typeof(TerminPlayers).GetField("<PlayerId>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly),
                 sentinel: 0);
             playerId.AddAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.None);
+
+            var playerRating = runtimeEntityType.AddProperty(
+                "PlayerRating",
+                typeof(int?),
+                propertyInfo: typeof(TerminPlayers).GetProperty("PlayerRating", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly),
+                fieldInfo: typeof(TerminPlayers).GetField("<PlayerRating>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly),
+                nullable: true);
+            playerRating.AddAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.None);
 
             var terminId = runtimeEntityType.AddProperty(
                 "TerminId",

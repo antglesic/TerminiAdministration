@@ -6,6 +6,7 @@
     [Surname]     VARCHAR (255) NULL,
     [Foot]        VARCHAR (5)   NULL,
     [Sex]         VARCHAR (6)   NULL,
+    [Rating]      INT           NULL,
     CONSTRAINT [PK_Termini_Player_Id] PRIMARY KEY CLUSTERED ([Id] ASC)
 );
 
