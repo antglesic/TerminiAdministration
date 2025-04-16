@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 using MudBlazor;
+using TerminiWeb.Components.Modals;
 using TerminiWeb.FilterModels;
 using TerminiWeb.Infrastructure.TerminService;
 using TerminiWeb.Infrastructure.TerminService.Dtos;
@@ -118,6 +119,15 @@ namespace TerminiWeb.Components.Pages
 		private async Task FinishTermin(TerminDto data)
 		{
 			Console.WriteLine("Finish termin {0} ", data?.Id.ToString() ?? string.Empty);
+
+			if (_dialogService != null)
+			{
+				var result = await _dialogService.ShowAsync<SetPlayerRatingsOnTermin>(
+								"Set player ratings",
+								new DialogParameters { { "TerminData", data } },
+								new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.ExtraLarge });
+			}
+
 			await InvokeAsync(StateHasChanged);
 		}
 
