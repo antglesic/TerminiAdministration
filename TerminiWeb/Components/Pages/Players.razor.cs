@@ -13,10 +13,10 @@ namespace TerminiWeb.Components.Pages
 		#region Fields
 
 		private bool firstLoad = true;
-		private IEnumerable<PlayerDto> _players;
+		private IEnumerable<PlayerDto>? _players;
 		private int _pageSize = 5;
 		private int _pageNumber = 1;
-		private int[] _pageSizeOptions = new int[] { 5, 10, 20 };
+		private int[] _pageSizeOptions = [5, 10, 20];
 		private PlayerFilterModel _filterModel = new PlayerFilterModel();
 
 		#endregion

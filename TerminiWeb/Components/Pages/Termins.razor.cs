@@ -125,7 +125,16 @@ namespace TerminiWeb.Components.Pages
 				var result = await _dialogService.ShowAsync<SetPlayerRatingsOnTermin>(
 								"Set player ratings",
 								new DialogParameters { { "TerminData", data } },
-								new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.ExtraLarge });
+								new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.ExtraExtraLarge, FullWidth = true });
+
+				if (result != null)
+				{
+					Console.WriteLine("Dialog result: {0}", result.Result.ToString() ?? string.Empty);
+				}
+				else
+				{
+					Console.WriteLine("Dialog result is null");
+				}
 			}
 
 			await InvokeAsync(StateHasChanged);
