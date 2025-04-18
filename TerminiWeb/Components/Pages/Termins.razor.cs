@@ -60,16 +60,20 @@ namespace TerminiWeb.Components.Pages
 
 			try
 			{
-				GetTerminsResponse response = await _terminService.GetTermins(request);
+				if (_terminService != null)
+				{
+					GetTerminsResponse? response = await _terminService.GetTermins(request);
 
-				if (response != null && response.Termins != null && response.Termins.Any())
-				{
-					_termins = response.Termins;
+					if (response != null && response.Termins != null && response.Termins.Any())
+					{
+						_termins = response.Termins;
+					}
+					else
+					{
+						_termins = new List<TerminDto>();
+					}
 				}
-				else
-				{
-					_termins = new List<TerminDto>();
-				}
+
 			}
 			catch (Exception ex)
 			{

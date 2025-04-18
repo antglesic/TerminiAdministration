@@ -6,5 +6,6 @@ namespace TerminiWeb.Infrastructure.TerminService
 	{
 		Task<GetTerminsResponse> GetTermins(GetTerminsRequest request);
 		Task<CreateTerminResponse> CreateTermin(CreateTerminRequest request);
+		Task<SetPlayerRatingsResponse> SetPlayerRatings(SetPlayerRatingsRequest request);
 	}
 }

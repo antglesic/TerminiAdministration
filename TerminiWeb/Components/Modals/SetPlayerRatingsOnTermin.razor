@@ -2,42 +2,45 @@
 @using TerminiWeb.Infrastructure.PlayerService.Dtos
 @using TerminiWeb.Infrastructure.TerminService.Dtos
 
-@if (_terminData == null)
-{
-	<LoadIndicator />
-}
-else
-{
-	<DataGrid TItem="PlayerDto"
-			  Items="@_players"
-			  Sortable="true"
-			  PageSizeOptions="@_pageSizeOptions"
-			  PageNumber="@_pageNumber"
-			  PageSize="@_pageSize"
-			  RowSelectionIdentifierProperty="Id"
-			  EnableRowSelection="true">
-		<GridColumn TItem="PlayerDto" Property="Name" Caption="Name" Sortable="true" Filterable="false" />
-		<GridColumn TItem="PlayerDto" Property="Surname" Caption="Surname" Sortable="true" Filterable="false" />
-		<GridColumn TItem="PlayerDto" Property="FullName" Caption="Full Name" Sortable="true" Filterable="false" />
-		<GridColumn TItem="PlayerDto" Caption="Rating" Sortable="false" Alignment="Common.Enumerators.AlignOption.Center">
-			<Template Context="player">
-				<DropDown T="@(PlayerRatingListDto)"
-						  Items="@(_playerRatingOptions)"
-						  DisplayProperty="RatingDisplay"
-						  IdentifierProperty="RatingValue"
-						  SelectedItem="@(_selectedPlayerRatings.TryGetValue(player, out PlayerRatingListDto? ratingListDto) ? ratingListDto : null)"
-						  ValueChanged="@((PlayerRatingListDto newValue) => OnSelectedItemChanged(player, newValue))"
-						  CanSearch="true"
-						  SearchPlaceHolder="Rating..."
-						  CustomStyle="z-index: 100;"
-						  Width="100%" />
-			</Template>
-		</GridColumn>
-	</DataGrid>
+<div class="ratings-dialog">
+	@if (_terminData == null)
+	{
+		<LoadIndicator />
+	}
+	else
+	{
+		<div class="data-grid">
 
-	<div class="mb-3 d-flex justify-content-end">
-		<button class="btn-moj" @onclick="async () => await Save()">
-			<i class="fas fa-plus me-2"></i>Save
-		</button>
-	</div>
-}
+			<DataGrid TItem="PlayerDto"
+				Items="@_players"
+				Sortable="true"
+				PageSizeOptions="@_pageSizeOptions"
+				PageNumber="@_pageNumber"
+				PageSize="@_pageSize"
+				RowSelectionIdentifierProperty="Id"
+				EnableRowSelection="true">
+					<GridColumn TItem="PlayerDto" Property="Name" Caption="Name" Sortable="true" Filterable="false" />
+					<GridColumn TItem="PlayerDto" Property="Surname" Caption="Surname" Sortable="true" Filterable="false" />
+					<GridColumn TItem="PlayerDto" Property="FullName" Caption="Full Name" Sortable="true" Filterable="false" />
+					<GridColumn TItem="PlayerDto" Caption="Rating" Sortable="false" Alignment="Common.Enumerators.AlignOption.Center">
+						<Template Context="player">
+							<DropDown T="@(PlayerRatingListDto)"
+								Items="@(_playerRatingOptions)"
+								DisplayProperty="RatingDisplay"
+								IdentifierProperty="RatingValue"
+								SelectedItem="@(_selectedPlayerRatings.TryGetValue(player, out PlayerRatingListDto? ratingListDto) ? ratingListDto : null)"
+								ValueChanged="@((PlayerRatingListDto newValue) => OnSelectedItemChanged(player, newValue))"
+								CanSearch="true" 
+								SearchPlaceHolder="Rating..." />
+						</Template>
+					</GridColumn>
+			</DataGrid>
+		</div>
+
+		<div class="action-bar">
+			<button class="btn btn-primary" @onclick="async () => await Save()">
+				<i class="fa-solid fa-floppy-disk me-2"></i>Save
+			</button>
+		</div>
+	}
+</div>

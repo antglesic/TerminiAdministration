@@ -3,6 +3,7 @@ using MudBlazor;
 using TerminiWeb.Infrastructure.PlayerService.Dtos;
 using TerminiWeb.Infrastructure.TerminService;
 using TerminiWeb.Infrastructure.TerminService.Dtos;
+using TerminiWeb.Infrastructure.TerminService.Models;
 
 namespace TerminiWeb.Components.Modals
 {
@@ -105,14 +106,34 @@ namespace TerminiWeb.Components.Modals
 
 		public async Task Save()
 		{
-			if (_selectedPlayerRatings == null || !_selectedPlayerRatings.Any())
+			if (_selectedPlayerRatings == null || _selectedPlayerRatings.Count() == 0)
 			{
 				_logger?.LogWarning("No player ratings selected.");
 				return;
 			}
 			else
 			{
-				//TODO: Save the selected player ratings to the server or perform any other necessary actions
+				if (_terminData != null)
+				{
+					IEnumerable<TerminPlayerDto> playerRatings = _selectedPlayerRatings
+						.Select(x => new TerminPlayerDto
+						{
+							PlayerId = x.Key.Id,
+							TerminId = _terminData.Id,
+							Rating = x.Value.RatingValue
+						});
+
+					SetPlayerRatingsRequest request = new SetPlayerRatingsRequest
+					{
+						TerminPlayers = playerRatings
+					};
+
+					if (_terminService != null)
+					{
+						SetPlayerRatingsResponse? response = await _terminService.SetPlayerRatings(request);
+						_logger?.LogInformation("Player ratings to be saved: {PlayerRatings}", playerRatings);
+					}
+				}
 			}
 
 			await InvokeAsync(StateHasChanged);

@@ -1,0 +1,18 @@
+.ratings-dialog {
+	padding: 1.5rem;
+	max-height: 80vh;
+	display: flex;
+	flex-direction: column;
+}
+
+.action-bar {
+	margin-top: 1rem;
+	padding-top: 1rem;
+	border-top: 1px solid var(--mud-palette-lines-default);
+	display: flex;
+	justify-content: flex-end;
+}
+
+.action-bar button {
+	min-width: 100px;
+}
