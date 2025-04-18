@@ -1,5 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <Sdk Name="Aspire.AppHost.Sdk" Version="9.1.0" />
+	<Sdk Name="Aspire.AppHost.Sdk" Version="9.2.0" />
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>net9.0</TargetFramework>
@@ -9,7 +9,7 @@
     <UserSecretsId>739e983a-917e-4f71-aeca-ad81e6bfbd81</UserSecretsId>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Aspire.Hosting.AppHost" Version="9.1.0" />
+     <PackageReference Include="Aspire.Hosting.AppHost" Version="9.2.0" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\TerminiAPI\TerminiAPI.csproj" />
