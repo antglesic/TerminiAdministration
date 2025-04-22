@@ -39,7 +39,7 @@ namespace TerminiService.TerminService
 			{
 				if (request.TerminId > 0)
 				{
-					TerminDto termin = await _terminiContext.Termin
+					TerminDto? termin = await _terminiContext.Termin
 						.AsNoTracking()
 						.Where(x => x.Active && x.Id == request.TerminId)
 						.Select(x => new TerminDto()
@@ -122,9 +122,9 @@ namespace TerminiService.TerminService
 							.Where(p => p.Active)
 							.Select(p => new PlayerDto()
 							{
-								Id = p.Id,
-								Active = p.Active,
-								DateCreated = p.DateCreated,
+								Id = p.Player.Id,
+								Active = p.Player.Active,
+								DateCreated = p.Player.DateCreated,
 								Name = p.Player.Name ?? string.Empty,
 								Surname = p.Player.Surname ?? string.Empty,
 								Sex = p.Player.Sex ?? string.Empty,
@@ -199,7 +199,7 @@ namespace TerminiService.TerminService
 
 							if (listOfPlayers.All(p => p.Id > 0))
 							{
-								TerminDto termin = await _terminiContext.Termin
+								TerminDto? termin = await _terminiContext.Termin
 									.AsNoTracking()
 									.Where(x => x.Active && x.Id == newTermin.Id)
 									.Select(x => new TerminDto()
@@ -248,6 +248,142 @@ namespace TerminiService.TerminService
 			}
 
 			return response;
+		}
+
+		public async Task<SetTerminPlayerRatingResponse> SetTerminPlayerRating(SetTerminPlayerRatingRequest request)
+		{
+			SetTerminPlayerRatingResponse response = new SetTerminPlayerRatingResponse()
+			{
+				Request = request
+			};
+
+			try
+			{
+				if (request != null && request.PlayerRatings != null && request.PlayerRatings.Any() && !request.PlayerRatings.Any(x => x.Rating <= 0))
+				{
+					bool canFinish = false;
+
+					foreach (SetTerminPlayerRatingDto terminPlayerRating in request.PlayerRatings)
+					{
+						TerminPlayers? terminPlayer = await _terminiContext.TerminPlayers
+							.Where(x => x.Active
+								&& x.PlayerId == terminPlayerRating.PlayerId
+								&& x.TerminId == terminPlayerRating.TerminId)
+							.FirstOrDefaultAsync();
+
+						if (terminPlayer != null)
+						{
+							terminPlayer.PlayerRating = terminPlayerRating.Rating;
+							_terminiContext.Update(terminPlayer);
+
+							await _terminiContext.SaveChangesAsync();
+
+							await UpdateOverallPlayerRating(terminPlayer.PlayerId);
+
+							_terminiContext.Entry(terminPlayer).State = EntityState.Detached;
+							canFinish = true;
+						}
+					}
+
+					if (canFinish)
+					{
+						await UpdateTerminFinished(request.PlayerRatings?.FirstOrDefault()?.TerminId);
+						await _terminiContext.SaveChangesAsync();
+					}
+
+					response.Success = true;
+				}
+				else
+				{
+					response.Message = "No player ratings were set!";
+				}
+			}
+			catch (Exception ex)
+			{
+				_logger
+					.ForContext("SetTerminPlayerRating", request.RequestToken, true)
+					.Error(ex, ex.Message);
+				response.Message = $"An error occurred while processing your request. Could not set a player rating: {request}";
+			}
+
+			return response;
+		}
+
+		#endregion
+
+		#region  Private Methods
+
+		private async Task UpdateOverallPlayerRating(int playerId)
+		{
+			if (playerId > 0)
+			{
+				try
+				{
+					Player? player = await _terminiContext.Player
+						.Where(x => x.Active
+							&& x.Id == playerId)
+						.FirstOrDefaultAsync();
+
+					if (player != null)
+					{
+						IEnumerable<TerminPlayers> terminPlayers = await _terminiContext.TerminPlayers
+							.AsNoTracking()
+							.Where(x => x.Active
+								&& x.PlayerId == playerId
+								&& x.PlayerRating.HasValue
+								&& x.PlayerRating.Value > 0)
+							.ToListAsync();
+
+						if (terminPlayers != null && terminPlayers.Any())
+						{
+							double overallRating = terminPlayers.Average(x => x.PlayerRating ?? 0);
+							player.Rating = (int)Math.Round(overallRating);
+
+							_terminiContext.Update(player);
+							await _terminiContext.SaveChangesAsync();
+
+							_terminiContext.Entry(player).State = EntityState.Detached;
+						}
+					}
+				}
+				catch (Exception ex)
+				{
+					_logger
+						.ForContext("Error updating player overral rating", ex.Message, true)
+						.ForContext("UpdateOverallPlayerRating", playerId, true)
+						.Error(ex, ex.Message);
+				}
+			}
+		}
+
+		private async Task UpdateTerminFinished(int? terminId)
+		{
+			if (terminId.HasValue && terminId.Value > 0)
+			{
+				try
+				{
+					Termin? termin = await _terminiContext.Termin
+						.Where(x => x.Active
+							&& x.Id == terminId)
+						.FirstOrDefaultAsync();
+
+					if (termin != null)
+					{
+						termin.IsFinished = true;
+						_terminiContext.Update(termin);
+						await _terminiContext.SaveChangesAsync();
+
+						_terminiContext.Entry(termin).State = EntityState.Detached;
+					}
+				}
+				catch (Exception ex)
+				{
+					_logger
+						.ForContext("Error updating termin finished", ex.Message, true)
+						.ForContext("UpdateTerminFinished", terminId, true)
+						.Error(ex, ex.Message);
+				}
+			}
 		}
 
 		#endregion

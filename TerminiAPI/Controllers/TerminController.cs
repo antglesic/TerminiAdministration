@@ -92,6 +92,32 @@ namespace TerminiAPI.Controllers
 			}
 		}
 
+		[HttpPost("SetPlayerRatings")]
+		[ProducesResponseType(typeof(SetTerminPlayerRatingResponse), StatusCodes.Status200OK)]
+		[ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
+		[ProducesResponseType(typeof(void), StatusCodes.Status403Forbidden)]
+		public async Task<ActionResult<SetTerminPlayerRatingResponse>> SetPlayerRatings([FromBody] SetPlayerRatingsViewModel setPlayerRatingsViewModel)
+		{
+			if (setPlayerRatingsViewModel != null)
+			{
+				SetTerminPlayerRatingRequest request = new SetTerminPlayerRatingRequest()
+				{
+					PlayerRatings = setPlayerRatingsViewModel.TerminPlayers
+				};
+
+				SetTerminPlayerRatingResponse response = await _terminService.SetTerminPlayerRating(request);
+
+				if (!response.Success)
+					return BadRequest(response.Message);
+
+				return Ok(response);
+			}
+			else
+			{
+				return BadRequest("SetPlayerRatingsViewModel is null.");
+			}
+		}
+
 		#endregion
 	}
 }

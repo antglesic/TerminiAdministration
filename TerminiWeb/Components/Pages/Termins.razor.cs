@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 using MudBlazor;
+using TerminiWeb.Components.Modals;
 using TerminiWeb.FilterModels;
 using TerminiWeb.Infrastructure.TerminService;
 using TerminiWeb.Infrastructure.TerminService.Dtos;
@@ -59,16 +60,20 @@ namespace TerminiWeb.Components.Pages
 
 			try
 			{
-				GetTerminsResponse response = await _terminService.GetTermins(request);
+				if (_terminService != null)
+				{
+					GetTerminsResponse? response = await _terminService.GetTermins(request);
 
-				if (response != null && response.Termins != null && response.Termins.Any())
-				{
-					_termins = response.Termins;
+					if (response != null && response.Termins != null && response.Termins.Any())
+					{
+						_termins = response.Termins;
+					}
+					else
+					{
+						_termins = new List<TerminDto>();
+					}
 				}
-				else
-				{
-					_termins = new List<TerminDto>();
-				}
+
 			}
 			catch (Exception ex)
 			{
@@ -118,6 +123,18 @@ namespace TerminiWeb.Components.Pages
 		private async Task FinishTermin(TerminDto data)
 		{
 			Console.WriteLine("Finish termin {0} ", data?.Id.ToString() ?? string.Empty);
+
+			if (_dialogService != null)
+			{
+				var result = await _dialogService.ShowAsync<SetPlayerRatingsOnTermin>(
+								"Set player ratings",
+								new DialogParameters { { "TerminData", data } },
+								new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.ExtraExtraLarge, FullWidth = true });
+
+				_ = await result.Result;
+			}
+
+			await FilteredSearch();
 			await InvokeAsync(StateHasChanged);
 		}
 

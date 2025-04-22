@@ -22,7 +22,6 @@ namespace TerminiWeb.Infrastructure.TerminService
 		private readonly ApiEndpointSettings _apiEndpointSettings;
 		private readonly HttpClient _httpClient;
 		private readonly JsonSerializerOptions _jsonSerializerOptions;
-		private readonly ILogger _logger = Log.ForContext<TerminService>();
 
 		#endregion
 
@@ -142,6 +141,44 @@ namespace TerminiWeb.Infrastructure.TerminService
 			{
 				_logger
 					.ForContext("CreateTermin", request.RequestToken, true)
+					.Error(ex, ex.Message);
+				throw;
+			}
+
+			return response;
+		}
+
+		public async Task<SetPlayerRatingsResponse> SetPlayerRatings(SetPlayerRatingsRequest request)
+		{
+			SetPlayerRatingsResponse response = new SetPlayerRatingsResponse()
+			{
+				Request = request
+			};
+
+			try
+			{
+				string apiUrl = $"{_apiEndpointSettings.TerminiApiBaseUrl}/{_controllerEndpoint}/SetPlayerRatings";
+				_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", ExternalServicesHelper.CreateToken());
+
+				var content = JsonSerializer.Serialize(new SetPlayerRatingSendDto(request.TerminPlayers), _jsonSerializerOptions);
+				var bodyContent = new StringContent(content, System.Text.Encoding.UTF8, "application/json");
+
+				using (HttpResponseMessage responseContent = await _httpClient.PostAsync(apiUrl, bodyContent))
+				{
+					if (responseContent.IsSuccessStatusCode)
+					{
+						response.Success = true;
+					}
+					else
+					{
+						response.Message = $"Failed to set player ratings. Status: {responseContent.StatusCode}";
+					}
+				}
+			}
+			catch (Exception ex)
+			{
+				_logger
+					.ForContext("SetPlayerRatings", request.RequestToken, true)
 					.Error(ex, ex.Message);
 				throw;
 			}
