@@ -131,16 +131,10 @@ namespace TerminiWeb.Components.Pages
 								new DialogParameters { { "TerminData", data } },
 								new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.ExtraExtraLarge, FullWidth = true });
 
-				if (result != null)
-				{
-					Console.WriteLine("Dialog result: {0}", result.Result.ToString() ?? string.Empty);
-				}
-				else
-				{
-					Console.WriteLine("Dialog result is null");
-				}
+				_ = await result.Result;
 			}
 
+			await FilteredSearch();
 			await InvokeAsync(StateHasChanged);
 		}
 

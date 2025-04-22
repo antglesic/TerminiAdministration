@@ -122,9 +122,9 @@ namespace TerminiService.TerminService
 							.Where(p => p.Active)
 							.Select(p => new PlayerDto()
 							{
-								Id = p.Id,
-								Active = p.Active,
-								DateCreated = p.DateCreated,
+								Id = p.Player.Id,
+								Active = p.Player.Active,
+								DateCreated = p.Player.DateCreated,
 								Name = p.Player.Name ?? string.Empty,
 								Surname = p.Player.Surname ?? string.Empty,
 								Sex = p.Player.Sex ?? string.Empty,
@@ -261,6 +261,8 @@ namespace TerminiService.TerminService
 			{
 				if (request != null && request.PlayerRatings != null && request.PlayerRatings.Any() && !request.PlayerRatings.Any(x => x.Rating <= 0))
 				{
+					bool canFinish = false;
+
 					foreach (SetTerminPlayerRatingDto terminPlayerRating in request.PlayerRatings)
 					{
 						TerminPlayers? terminPlayer = await _terminiContext.TerminPlayers
@@ -274,13 +276,21 @@ namespace TerminiService.TerminService
 							terminPlayer.PlayerRating = terminPlayerRating.Rating;
 							_terminiContext.Update(terminPlayer);
 
+							await _terminiContext.SaveChangesAsync();
+
 							await UpdateOverallPlayerRating(terminPlayer.PlayerId);
 
 							_terminiContext.Entry(terminPlayer).State = EntityState.Detached;
+							canFinish = true;
 						}
 					}
 
-					await _terminiContext.SaveChangesAsync();
+					if (canFinish)
+					{
+						await UpdateTerminFinished(request.PlayerRatings?.FirstOrDefault()?.TerminId);
+						await _terminiContext.SaveChangesAsync();
+					}
+
 					response.Success = true;
 				}
 				else
@@ -341,6 +351,36 @@ namespace TerminiService.TerminService
 					_logger
 						.ForContext("Error updating player overral rating", ex.Message, true)
 						.ForContext("UpdateOverallPlayerRating", playerId, true)
+						.Error(ex, ex.Message);
+				}
+			}
+		}
+
+		private async Task UpdateTerminFinished(int? terminId)
+		{
+			if (terminId.HasValue && terminId.Value > 0)
+			{
+				try
+				{
+					Termin? termin = await _terminiContext.Termin
+						.Where(x => x.Active
+							&& x.Id == terminId)
+						.FirstOrDefaultAsync();
+
+					if (termin != null)
+					{
+						termin.IsFinished = true;
+						_terminiContext.Update(termin);
+						await _terminiContext.SaveChangesAsync();
+
+						_terminiContext.Entry(termin).State = EntityState.Detached;
+					}
+				}
+				catch (Exception ex)
+				{
+					_logger
+						.ForContext("Error updating termin finished", ex.Message, true)
+						.ForContext("UpdateTerminFinished", terminId, true)
 						.Error(ex, ex.Message);
 				}
 			}

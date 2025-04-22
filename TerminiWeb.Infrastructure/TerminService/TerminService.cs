@@ -160,7 +160,7 @@ namespace TerminiWeb.Infrastructure.TerminService
 				string apiUrl = $"{_apiEndpointSettings.TerminiApiBaseUrl}/{_controllerEndpoint}/SetPlayerRatings";
 				_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", ExternalServicesHelper.CreateToken());
 
-				var content = JsonSerializer.Serialize(request.TerminPlayers, _jsonSerializerOptions);
+				var content = JsonSerializer.Serialize(new SetPlayerRatingSendDto(request.TerminPlayers), _jsonSerializerOptions);
 				var bodyContent = new StringContent(content, System.Text.Encoding.UTF8, "application/json");
 
 				using (HttpResponseMessage responseContent = await _httpClient.PostAsync(apiUrl, bodyContent))
