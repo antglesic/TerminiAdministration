@@ -102,7 +102,17 @@ namespace TerminiWeb.Components.Common
 
 		public bool AreAllRowsSelected => ItemList != null && ItemList.Any() && ItemList.All(item => IsRowSelected(item));
 
-		private bool IsRowSelected(TItem item) => SelectedItems.Contains(item);
+		private bool IsRowSelected(TItem item)
+		{
+			if (MultiSelectionEnabled)
+			{
+				return SelectedItems.Contains(item);
+			}
+			else
+			{
+				return SelectedItem != null && SelectedItem.Equals(item);
+			}
+		}
 
 		private void SelectAllRows(ChangeEventArgs e)
 		{
@@ -135,16 +145,32 @@ namespace TerminiWeb.Components.Common
 		{
 			if (e.Value is bool isChecked)
 			{
-				if (isChecked && !SelectedItems.Contains(item))
+				if (MultiSelectionEnabled)
 				{
-					SelectedItems.Add(item);
-				}
-				else if (!isChecked)
-				{
-					SelectedItems.Remove(item);
-				}
+					if (isChecked && !SelectedItems.Contains(item))
+					{
+						SelectedItems.Add(item);
+					}
+					else if (!isChecked)
+					{
+						SelectedItems.Remove(item);
+					}
 
-				SelectedRowItems = SelectedItems;
+					SelectedRowItems = SelectedItems;
+				}
+				else if (!MultiSelectionEnabled && EnableRowSelection)
+				{
+					if (isChecked && (SelectedItem == null || !SelectedItem.Equals(item)))
+					{
+						SelectedRowItem = item;
+						SelectedItem = item;
+					}
+					else if (!isChecked && SelectedItem != null && SelectedItem.Equals(item))
+					{
+						SelectedRowItem = default;
+						SelectedItem = default;
+					}
+				}
 			}
 		}
 
@@ -338,6 +364,7 @@ namespace TerminiWeb.Components.Common
 				SelectedItems.Clear();
 				SelectedItems.Add(item);
 				SelectedRowItem = item;
+				SelectedItem = item;
 			}
 		}
 
@@ -345,30 +372,12 @@ namespace TerminiWeb.Components.Common
 		{
 			List<string> classes = new List<string>();
 
-			// Add custom class if provided
-			if (!string.IsNullOrEmpty(CustomCssClass))
-			{
-				classes.Add(CustomCssClass);
-			}
-
-			// Add selection class if applicable
-			if ((EnableRowSelection || IgnoreEnableRowSelection) && (SelectedItems.Contains(item) || IsItemSelected(item)))
+			if (IsRowSelected(item))
 			{
 				classes.Add("selected-row");
 			}
 
 			return string.Join(" ", classes);
-		}
-
-		// Helper method to check if item is selected
-		private bool IsItemSelected(TItem item)
-		{
-			if (SelectedRowItem == null || item == null) return false;
-
-			object? selectedItemId = SelectedRowItem.GetType()?.GetProperty(RowSelectionIdentifierProperty)?.GetValue(SelectedRowItem, null);
-			object? itemId = item.GetType()?.GetProperty(RowSelectionIdentifierProperty)?.GetValue(item, null);
-
-			return selectedItemId != null && itemId != null && selectedItemId == itemId;
 		}
 
 		private void OnInput(string filter, string property)
