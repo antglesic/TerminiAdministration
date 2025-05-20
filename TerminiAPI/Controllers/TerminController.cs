@@ -64,7 +64,7 @@ namespace TerminiAPI.Controllers
 		[ProducesResponseType(typeof(CreateTerminResponse), StatusCodes.Status200OK)]
 		[ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
 		[ProducesResponseType(typeof(void), StatusCodes.Status403Forbidden)]
-		public async Task<ActionResult<CreateTerminResponse>> CreateTermin([FromBody] CreateTerminViewModel createTerminViewModel)
+		public async Task<ActionResult<CreateTerminResponse>> CreateTermin([FromBody] CreateTerminViewModel? createTerminViewModel)
 		{
 			if (createTerminViewModel != null)
 			{
@@ -96,7 +96,7 @@ namespace TerminiAPI.Controllers
 		[ProducesResponseType(typeof(SetTerminPlayerRatingResponse), StatusCodes.Status200OK)]
 		[ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
 		[ProducesResponseType(typeof(void), StatusCodes.Status403Forbidden)]
-		public async Task<ActionResult<SetTerminPlayerRatingResponse>> SetPlayerRatings([FromBody] SetPlayerRatingsViewModel setPlayerRatingsViewModel)
+		public async Task<ActionResult<SetTerminPlayerRatingResponse>> SetPlayerRatings([FromBody] SetPlayerRatingsViewModel? setPlayerRatingsViewModel)
 		{
 			if (setPlayerRatingsViewModel != null)
 			{
