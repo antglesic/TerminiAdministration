@@ -21,6 +21,9 @@ EndProject
 Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "TerminiDatabase", "TerminiDatabase\TerminiDatabase.sqlproj", "{EA3868F4-8164-4618-9EC5-B016D8418C82}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution files", "Solution files", "{82A94D1F-126B-4839-9A04-1B6D59E75B82}"
+	ProjectSection(SolutionItems) = preProject
+		README.md = README.md
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TerminiAdministrationAPI", "TerminiAdministrationAPI", "{75168DDE-061F-4774-A25D-00F69847C768}"
 EndProject
