@@ -118,24 +118,39 @@ namespace TerminiService.PlayerService
 						Sex = request.Sex
 					};
 
-					_terminiContext.Player.Add(newPlayer);
-					await _terminiContext.SaveChangesAsync();
+					bool doesPlayerExist = await _terminiContext.Player
+						.AsNoTracking()
+						.AnyAsync(p => p.Active
+							&& p.Name == request.Name
+							&& p.Surname == request.Surname
+							&& p.Sex == request.Sex
+							&& p.Foot == request.Foot);
 
-					if (newPlayer != null && newPlayer.Id > 0)
+					if (!doesPlayerExist)
 					{
-						PlayerDto player = new()
-						{
-							Id = newPlayer.Id,
-							Active = newPlayer.Active,
-							DateCreated = newPlayer.DateCreated,
-							Name = newPlayer.Name ?? string.Empty,
-							Surname = newPlayer.Surname ?? string.Empty,
-							Foot = newPlayer.Foot ?? string.Empty,
-							Sex = newPlayer.Sex ?? string.Empty
-						};
+						_terminiContext.Player.Add(newPlayer);
+						await _terminiContext.SaveChangesAsync();
 
-						response.Success = true;
-						response.Player = player;
+						if (newPlayer != null && newPlayer.Id > 0)
+						{
+							PlayerDto player = new()
+							{
+								Id = newPlayer.Id,
+								Active = newPlayer.Active,
+								DateCreated = newPlayer.DateCreated,
+								Name = newPlayer.Name ?? string.Empty,
+								Surname = newPlayer.Surname ?? string.Empty,
+								Foot = newPlayer.Foot ?? string.Empty,
+								Sex = newPlayer.Sex ?? string.Empty
+							};
+
+							response.Success = true;
+							response.Player = player;
+						}
+					}
+					else
+					{
+						response.Message = "Player already exists!";
 					}
 				}
 				else
