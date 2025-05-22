@@ -1,7 +1,7 @@
-﻿using System.Net.Http.Headers;
-using System.Text.Json;
-using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Options;
 using Serilog;
+using System.Net.Http.Headers;
+using System.Text.Json;
 using TerminiWeb.Infrastructure.Common.Client;
 using TerminiWeb.Infrastructure.Common.Configuration;
 using TerminiWeb.Infrastructure.PlayerService.Dtos;
@@ -108,6 +108,62 @@ namespace TerminiWeb.Infrastructure.PlayerService
 			else
 			{
 				response.Message = "Request is null";
+			}
+
+			return response;
+		}
+
+		public async Task<CreatePlayerResponse> CreatePlayer(CreatePlayerRequest request)
+		{
+			CreatePlayerResponse response = new CreatePlayerResponse()
+			{
+				Request = request
+			};
+
+			if (request != null)
+			{
+				try
+				{
+					string apiUrl = $"{_apiEndpointSettings.TerminiApiBaseUrl}/{_controllerEndpoint}/CreatePlayer";
+					_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", ExternalServicesHelper.CreateToken());
+
+					var content = JsonSerializer.Serialize(request.CreatePlayer, _jsonSerializerOptions);
+					var bodyContent = new StringContent(content, System.Text.Encoding.UTF8, "application/json");
+
+					using (HttpResponseMessage responseContent = await _httpClient.PostAsync(apiUrl, bodyContent))
+					{
+						if (responseContent.IsSuccessStatusCode)
+						{
+							Stream responseStream = await responseContent.Content.ReadAsStreamAsync();
+
+							if (responseStream != null && responseStream.Length > 0)
+							{
+								PlayerDto? createdPlayer = await JsonSerializer.DeserializeAsync<PlayerDto>(responseStream, _jsonSerializerOptions);
+
+								if (createdPlayer != null)
+								{
+									response.Player = createdPlayer;
+									response.Success = true;
+								}
+								else
+								{
+									response.Message = "Failed to deserialize the created player";
+								}
+							}
+						}
+						else
+						{
+							response.Message = $"Failed to create a player. Status: {responseContent.StatusCode}";
+						}
+					}
+				}
+				catch (Exception ex)
+				{
+					_logger
+						.ForContext("CreatePlayer", request.RequestToken, true)
+						.Error(ex, ex.Message);
+					throw;
+				}
 			}
 
 			return response;

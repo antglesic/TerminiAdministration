@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Serilog;
 using TerminiDataAccess.TerminiContext;
+using TerminiDataAccess.TerminiContext.Models;
 using TerminiService.PlayerService.Dtos;
 using TerminiService.PlayerService.Models;
 
@@ -92,6 +93,77 @@ namespace TerminiService.PlayerService
 						.ForContext("GetPlayersList", request.RequestToken, true)
 						.Error(ex, ex.Message);
 				throw;
+			}
+
+			return response;
+		}
+
+		public async Task<CreatePlayerResponse> CreatePlayer(CreatePlayerRequest request)
+		{
+			CreatePlayerResponse response = new()
+			{
+				Request = request
+			};
+
+			try
+			{
+				if (request != null)
+				{
+					Player newPlayer = new()
+					{
+						Active = true,
+						Name = request.Name,
+						Surname = request.Surname,
+						Foot = request.Foot,
+						Sex = request.Sex
+					};
+
+					bool doesPlayerExist = await _terminiContext.Player
+						.AsNoTracking()
+						.AnyAsync(p => p.Active
+							&& p.Name == request.Name
+							&& p.Surname == request.Surname
+							&& p.Sex == request.Sex
+							&& p.Foot == request.Foot);
+
+					if (!doesPlayerExist)
+					{
+						_terminiContext.Player.Add(newPlayer);
+						await _terminiContext.SaveChangesAsync();
+
+						if (newPlayer != null && newPlayer.Id > 0)
+						{
+							PlayerDto player = new()
+							{
+								Id = newPlayer.Id,
+								Active = newPlayer.Active,
+								DateCreated = newPlayer.DateCreated,
+								Name = newPlayer.Name ?? string.Empty,
+								Surname = newPlayer.Surname ?? string.Empty,
+								Foot = newPlayer.Foot ?? string.Empty,
+								Sex = newPlayer.Sex ?? string.Empty
+							};
+
+							response.Success = true;
+							response.Player = player;
+						}
+					}
+					else
+					{
+						response.Message = "Player already exists!";
+					}
+				}
+				else
+				{
+					response.Message = "No player was created!";
+				}
+			}
+			catch (Exception ex)
+			{
+				_logger
+					.ForContext("CreatePlayer", request.RequestToken, true)
+					.Error(ex, ex.Message);
+				response.Message = $"An error occurred while processing your request. Could not create a Player: {request}";
 			}
 
 			return response;

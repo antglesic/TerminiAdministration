@@ -1,0 +1,36 @@
+﻿@page "/players/create"
+
+@using TerminiWeb.Infrastructure.PlayerService.Dtos
+@using TerminiWeb.Components.Common
+
+<div class="create-player-form">
+	<h3 class="mb-4">Create Player</h3>
+
+	<div class="form-row">
+		<div class="form-group">
+			<MudTextField @bind-Value="@_name" Label="Name" />
+		</div>
+	</div>
+
+	<div class="form-row">
+		<div class="form-group">
+			<MudTextField @bind-Value="@_surname" Label="Surname" />
+		</div>
+	</div>
+
+	<div class="form-row">
+		<div class="form-group">
+			<MudTextField @bind-Value="@_foot" Label="Foot" />
+		</div>
+	</div>
+
+	<div class="form-row">
+		<div class="form-group">
+			<MudTextField @bind-Value="@_sex" Label="Sex" />
+		</div>
+	</div>
+
+	<div class="actions">
+		<MudButton Color="Color.Primary" OnClick="@HandleSubmit">Create Player</MudButton>
+	</div>
+</div>

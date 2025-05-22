@@ -14,22 +14,24 @@ namespace TerminiWeb.Components.Pages
 
 		private bool firstLoad = true;
 		private IEnumerable<PlayerDto>? _players;
-		private int _pageSize = 5;
-		private int _pageNumber = 1;
-		private int[] _pageSizeOptions = [5, 10, 20];
-		private PlayerFilterModel _filterModel = new PlayerFilterModel();
+		private readonly int _pageSize = 5;
+		private readonly int _pageNumber = 1;
+		private readonly int[] _pageSizeOptions = [5, 10, 20];
+		private readonly PlayerFilterModel _filterModel = new PlayerFilterModel();
 
 		#endregion
 
 		#region Injections
 
 		[Inject]
-		private IPlayerService? _playerService { get; set; }
+		private IPlayerService? PlayerService { get; set; }
 
 		[Inject]
-		private ILogger<Players>? _logger { get; set; }
+		private ILogger<Players>? Logger { get; set; }
 
-		[Inject] IDialogService? _dialogService { get; set; }
+		[Inject] IDialogService? DialogService { get; set; }
+
+		[Inject] NavigationManager? NavigationManager { get; set; }
 
 		#endregion
 
@@ -57,16 +59,19 @@ namespace TerminiWeb.Components.Pages
 
 			try
 			{
-				GetPlayerListResponse response = await _playerService.GetPlayerList(request);
-
-				if (response != null && response.Players != null && response.Players.Any())
+				if (PlayerService != null)
 				{
-					_players = response.Players;
+					GetPlayerListResponse response = await PlayerService.GetPlayerList(request);
+
+					if (response != null && response.Players != null && response.Players.Any())
+					{
+						_players = response.Players;
+					}
 				}
 			}
 			catch (Exception ex)
 			{
-				_logger?.LogError(ex, "Players.razor.cs.GetPlayers() - Exception message: {Message}", ex.Message);
+				Logger?.LogError(ex, "Players.razor.cs.GetPlayers() - Exception message: {Message}", ex.Message);
 				return false;
 			}
 
@@ -115,15 +120,14 @@ namespace TerminiWeb.Components.Pages
 				Console.WriteLine("Edit player called {0} with player: {1}", DateTime.Now.ToString(), data?.FullName ?? string.Empty);
 				var options = new DialogOptions { CloseOnEscapeKey = true };
 
-				if (_dialogService != null)
+				if (DialogService != null)
 				{
-					await _dialogService.ShowAsync<EditPlayerModal>($"Edit Player {data?.FullName}", options);
+					await DialogService.ShowAsync<EditPlayerModal>($"Edit Player {data?.FullName}", options);
 				}
 			}
 			catch (Exception ex)
 			{
-				if (_logger != null)
-					_logger.LogError($"Error in EditPlayer: {ex.Message}", ex);
+				Logger?.LogError($"Error in EditPlayer: {ex.Message}", ex);
 
 				throw;
 			}
@@ -141,6 +145,11 @@ namespace TerminiWeb.Components.Pages
 		{
 			Console.WriteLine("View player called {0} with player: {1}", DateTime.Now.ToString(), data?.FullName ?? string.Empty);
 			await InvokeAsync(StateHasChanged);
+		}
+
+		private void CreateNewPlayer()
+		{
+			NavigationManager?.NavigateTo("/players/create");
 		}
 
 		#endregion
