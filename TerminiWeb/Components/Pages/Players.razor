@@ -8,25 +8,12 @@
 }
 else
 {
-	<DropDown T="PlayerDto"
-			  Items="@_players"
-			  DisplayProperty="FullName"
-			  IdentifierProperty="Id"
-			  ValueChanged="OnSelectedItemChanged"
-			  CanSearch="true"
-			  SearchPlaceHolder="Search..."
-			  CustomStyle=""
-			  Width="35%" />
+	<div class="mb-3 d-flex justify-content-end">
+		<button class="btn-moj" @onclick="@CreateNewPlayer">
+			<i class="fas fa-plus me-2"></i>Add New
+		</button>
+	</div>
 
-	<MultiSelect T="PlayerDto"
-				 Items="@_players"
-				 DisplayProperty="FullName"
-				 IdentifierProperty="Id"
-				 ValuesChanged="OnSelectedItemsChanged"
-				 CanSearch="true"
-				 SearchPlaceHolder="Search..."
-				 CustomStyle=""
-				 Width="35%" />
 
 	<DataGrid TItem="PlayerDto"
 			  Items="@_players"

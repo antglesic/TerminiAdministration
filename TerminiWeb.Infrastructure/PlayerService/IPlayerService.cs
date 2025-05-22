@@ -5,5 +5,6 @@ namespace TerminiWeb.Infrastructure.PlayerService
 	public interface IPlayerService
 	{
 		Task<GetPlayerListResponse> GetPlayerList(GetPlayerListRequest request);
+		Task<CreatePlayerResponse> CreatePlayer(CreatePlayerRequest request);
 	}
 }

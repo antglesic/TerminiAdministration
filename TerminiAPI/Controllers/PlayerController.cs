@@ -1,6 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using TerminiAPI.ViewModels;
 using TerminiService.PlayerService;
+using TerminiService.PlayerService.Dtos;
 using TerminiService.PlayerService.Models;
+using TerminiService.TerminService.Models;
 
 namespace TerminiAPI.Controllers
 {
@@ -42,6 +45,41 @@ namespace TerminiAPI.Controllers
 				return BadRequest(response.Message);
 
 			return Ok(response);
+		}
+
+		[HttpPost("CreatePlayer")]
+		[ProducesResponseType(typeof(CreatePlayerResponse), StatusCodes.Status200OK)]
+		[ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
+		[ProducesResponseType(typeof(void), StatusCodes.Status403Forbidden)]
+		public async Task<ActionResult<CreateTerminResponse>> CreateTermin([FromBody] CreatePlayerTerminViewModel? createPlayerViewModel)
+		{
+			if (createPlayerViewModel != null)
+			{
+				CreatePlayerDto createPlayer = new CreatePlayerDto()
+				{
+					Name = createPlayerViewModel.Name,
+					Surname = createPlayerViewModel.Surname,
+					Foot = createPlayerViewModel.Foot,
+					Sex = createPlayerViewModel.Sex
+				};
+
+				CreatePlayerRequest request = new();
+				request.Name = createPlayerViewModel.Name;
+				request.Surname = createPlayerViewModel.Surname;
+				request.Foot = createPlayerViewModel.Foot;
+				request.Sex = createPlayerViewModel.Sex;
+
+				CreatePlayerResponse response = await _playerService.CreatePlayer(request);
+
+				if (!response.Success)
+					return BadRequest(response.Message);
+
+				return Ok(response);
+			}
+			else
+			{
+				return BadRequest("CreatePlayerTerminViewModel is null.");
+			}
 		}
 
 		#endregion
