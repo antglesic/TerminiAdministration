@@ -1,0 +1,48 @@
+@page "/termin/view"
+
+@using TerminiWeb.Infrastructure.TerminService.Dtos
+@using TerminiWeb.Infrastructure.PlayerService.Dtos
+@using GrabaUIPackage.Components.Common
+
+@if (_termin == null)
+{
+	<LoadIndicator />
+}
+else
+{
+	<div class="modal-container">
+		<div class="termin-info">
+			<h3>Termin Information</h3>
+			<p>Date: @(_termin?.ScheduledDate.ToString("dd.MM.yyyy"))</p>
+			<p>Start Time: @(_termin?.StartTime.ToString("HH:mm"))</p>
+			<p>Status: @(_termin?.WasPlayed == true ? "Played" : "Not played yet")</p>
+		</div>
+
+		<div class="teams-container">
+			@if (_teamNumbers != null && _teamNumbers.Any())
+			{
+				@foreach (int? teamNumber in _teamNumbers.Where(t => t.HasValue))
+				{
+					if (teamNumber != null && teamNumber.HasValue && teamNumber > 0)
+					{
+						<div class="team-table">
+							<h4>Team @(teamNumber?.ToString() ?? string.Empty)</h4>
+							<DataGrid TItem="PlayerDto" 
+								Items="@GetTeamPlayers(teamNumber ?? 0)"
+								Sortable="true"
+								EnableRowSelection="false"
+								MultiSelectionEnabled="false">
+								<GridColumn TItem="PlayerDto" Property="FullName" Caption="Player" Sortable="true" />
+								<GridColumn TItem="PlayerDto" Property="Rating" Caption="Rating" Sortable="true" />
+							</DataGrid>
+						</div>
+					}
+				}
+			}
+			else
+			{
+				<p>No teams have been created yet.</p>
+			}
+		</div>
+	</div>
+}

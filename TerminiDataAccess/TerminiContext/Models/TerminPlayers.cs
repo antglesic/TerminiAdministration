@@ -17,6 +17,8 @@ public partial class TerminPlayers
 
     public int? PlayerRating { get; set; }
 
+    public int? TeamNumber { get; set; }
+
     public virtual Player Player { get; set; } = null!;
 
     public virtual Termin Termin { get; set; } = null!;

@@ -117,6 +117,17 @@ namespace TerminiWeb.Components.Pages
 		private async Task ViewTermin(TerminDto data)
 		{
 			Console.WriteLine("View termin {0} ", data?.Id.ToString() ?? string.Empty);
+			if (_dialogService != null)
+			{
+				var result = await _dialogService.ShowAsync<ViewTerminModal>(
+								"View termin data",
+								new DialogParameters { { "TerminData", data } },
+								new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.ExtraExtraLarge, FullWidth = true });
+
+				_ = await result.Result;
+			}
+
+			await FilteredSearch();
 			await InvokeAsync(StateHasChanged);
 		}
 
