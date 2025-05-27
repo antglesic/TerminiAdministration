@@ -135,7 +135,7 @@ namespace TerminiService.TerminService
 					})
 					.ToList();
 
-				if (terminsList != null && terminsList.Any())
+				if (terminsList.Any())
 				{
 					response.Termins = terminsList;
 					response.Success = true;
@@ -178,7 +178,7 @@ namespace TerminiService.TerminService
 					_terminiContext.Termin.Add(newTermin);
 					await _terminiContext.SaveChangesAsync();
 
-					if (newTermin.Id > 0 && request.CreateTermin.Players != null && request.CreateTermin.Players.Any())
+					if (newTermin.Id > 0 && request.CreateTermin.Players.Any())
 					{
 						List<TerminPlayers> listOfPlayers = new List<TerminPlayers>();
 
@@ -192,6 +192,32 @@ namespace TerminiService.TerminService
 							};
 
 							listOfPlayers.Add(newTerminPlayer);
+						}
+
+						// Sort players into teams (set TeamNumber) depending on the players Rating in the PlayerDto
+						// Get players with their ratings from the request
+						var playersWithRatings = request.CreateTermin.Players
+							.Select(p => new { Player = p, Rating = p.Rating ?? 5 })  // Use 5 as default if rating is null
+							.OrderByDescending(p => p.Rating)
+							.ToList();
+
+						int numberOfTeams = 2;
+
+						// Assign team numbers using snake draft pattern (1,2,2,1,1,2,2,1...)
+						for (int i = 0; i < playersWithRatings.Count; i++)
+						{
+							int teamNumber;
+							if (i % (numberOfTeams * 2) < numberOfTeams)
+							{
+								teamNumber = (i % numberOfTeams) + 1;
+							}
+							else
+							{
+								teamNumber = numberOfTeams - (i % numberOfTeams);
+							}
+
+							int playerIndex = playersWithRatings[i].Player.Id;
+							listOfPlayers.First(p => p.PlayerId == playerIndex).TeamNumber = teamNumber;
 						}
 
 						if (listOfPlayers.Any())
@@ -222,7 +248,8 @@ namespace TerminiService.TerminService
 												Name = p.Player.Name ?? string.Empty,
 												Surname = p.Player.Surname ?? string.Empty,
 												Sex = p.Player.Sex ?? string.Empty,
-												Foot = p.Player.Foot ?? string.Empty
+												Foot = p.Player.Foot ?? string.Empty,
+												TeamNumber = p.TeamNumber
 											})
 									})
 									.FirstOrDefaultAsync();
@@ -243,10 +270,14 @@ namespace TerminiService.TerminService
 			}
 			catch (Exception ex)
 			{
-				_logger
-					.ForContext("CreateTermin", request.RequestToken, true)
-					.Error(ex, ex.Message);
-				response.Message = $"An error occurred while processing your request. Could not get create a Termin: {request}";
+				if (request != null)
+				{
+					_logger
+					  .ForContext("CreateTermin", request.RequestToken, true)
+					  .Error(ex, ex.Message);
+					response.Message =
+					  $"An error occurred while processing your request. Could not get create a Termin: {request}";
+				}
 			}
 
 			return response;
@@ -261,7 +292,7 @@ namespace TerminiService.TerminService
 
 			try
 			{
-				if (request != null && request.PlayerRatings != null && request.PlayerRatings.Any() && !request.PlayerRatings.Any(x => x.Rating <= 0))
+				if (request != null && request.PlayerRatings.Any() && !request.PlayerRatings.Any(x => x.Rating <= 0))
 				{
 					bool canFinish = false;
 
@@ -302,10 +333,14 @@ namespace TerminiService.TerminService
 			}
 			catch (Exception ex)
 			{
-				_logger
-					.ForContext("SetTerminPlayerRating", request.RequestToken, true)
-					.Error(ex, ex.Message);
-				response.Message = $"An error occurred while processing your request. Could not set a player rating: {request}";
+				if (request != null)
+				{
+					_logger
+					  .ForContext("SetTerminPlayerRating", request.RequestToken, true)
+					  .Error(ex, ex.Message);
+					response.Message =
+					  $"An error occurred while processing your request. Could not set a player rating: {request}";
+				}
 			}
 
 			return response;
@@ -336,7 +371,7 @@ namespace TerminiService.TerminService
 								&& x.PlayerRating.Value > 0)
 							.ToListAsync();
 
-						if (terminPlayers != null && terminPlayers.Any())
+						if (terminPlayers.Any())
 						{
 							double overallRating = terminPlayers.Average(x => x.PlayerRating ?? 0);
 							player.Rating = (int)Math.Round(overallRating);
