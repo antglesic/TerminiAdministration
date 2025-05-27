@@ -10,5 +10,6 @@
 		public string? Sex { get; set; } = string.Empty;
 		public string? Foot { get; set; } = string.Empty;
 		public int? Rating { get; set; }
+		public int? TeamNumber { get; set; }
 	}
 }

@@ -17,5 +17,6 @@
 				return $"{Name} {Surname}";
 			}
 		}
+		public int? TeamNumber { get; set; }
 	}
 }

@@ -26,3 +26,44 @@
 .close-button span {
     line-height: 1;
 }
+
+.modal-container {
+		padding: 20px;
+	}
+
+	.termin-info {
+		margin-bottom: 20px;
+		padding: 15px;
+		background-color: #f8f9fa;
+		border-radius: 5px;
+	}
+
+	.teams-container {
+		display: flex;
+		gap: 20px;
+		justify-content: space-between;
+	}
+
+	.team-table {
+		flex: 1;
+	}
+
+	table {
+		width: 100%;
+		border-collapse: collapse;
+	}
+
+	th,
+	td {
+		padding: 8px;
+		border: 1px solid #ddd;
+		text-align: left;
+	}
+
+	th {
+		background-color: #f4f4f4;
+	}
+
+	tr:nth-child(even) {
+		background-color: #f8f8f8;
+	}

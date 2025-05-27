@@ -129,9 +129,11 @@ namespace TerminiService.TerminService
 								Surname = p.Player.Surname ?? string.Empty,
 								Sex = p.Player.Sex ?? string.Empty,
 								Foot = p.Player.Foot ?? string.Empty,
-								Rating = p.PlayerRating ?? p.Player.Rating
+								Rating = p.PlayerRating ?? p.Player.Rating,
+								TeamNumber = p.TeamNumber
 							})
-					});
+					})
+					.ToList();
 
 				if (terminsList != null && terminsList.Any())
 				{

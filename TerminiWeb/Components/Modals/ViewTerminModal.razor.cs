@@ -9,7 +9,13 @@ public partial class ViewTerminModal : ComponentBase
 	#region Parameters
 
 	[Parameter]
-	public TerminDto? Termin { get; set; }
+	public TerminDto? TerminData { get; set; }
+
+	#endregion
+
+	#region Fields
+
+	private TerminDto? _termin;
 
 	#endregion
 
@@ -26,6 +32,23 @@ public partial class ViewTerminModal : ComponentBase
 
 	#endregion
 
+	#region Methods
+
+	protected override async Task OnInitializedAsync()
+	{
+		if (TerminData == null)
+		{
+			Logger?.LogError("Termin is null in ViewTerminModal.");
+		}
+		else
+		{
+			_termin = TerminData;
+			Logger?.LogInformation("Initialized ViewTerminModal with Termin ID: {TerminId}", _termin.Id);
+		}
+
+		await base.OnInitializedAsync();
+	}
+
 	private void Close()
 	{
 		if (NavigationManager != null)
@@ -33,4 +56,6 @@ public partial class ViewTerminModal : ComponentBase
 			NavigationManager.NavigateTo("/termins");
 		}
 	}
+
+	#endregion
 }
