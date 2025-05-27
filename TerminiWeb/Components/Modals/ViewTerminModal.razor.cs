@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Components;
 using TerminiWeb.Infrastructure.PlayerService.Dtos;
-using TerminiWeb.Infrastructure.TerminService;
 using TerminiWeb.Infrastructure.TerminService.Dtos;
 
 namespace TerminiWeb.Components.Modals;
@@ -27,9 +26,6 @@ public partial class ViewTerminModal : ComponentBase
 	private ILogger<ViewTerminModal>? Logger { get; set; }
 
 	[Inject]
-	private ITerminService? TerminService { get; set; }
-
-	[Inject]
 	private NavigationManager? NavigationManager { get; set; }
 
 	#endregion
@@ -41,6 +37,7 @@ public partial class ViewTerminModal : ComponentBase
 		if (TerminData == null)
 		{
 			Logger?.LogError("Termin is null in ViewTerminModal.");
+			Close();
 		}
 		else
 		{
@@ -59,7 +56,8 @@ public partial class ViewTerminModal : ComponentBase
 			}
 			else
 			{
-				Logger?.LogWarning("No players found for the termin with ID: {TerminId}", _termin.Id);
+				if (_termin != null && _termin.Players == null)
+					Logger?.LogWarning("No players found for the termin with ID: {TerminId}", _termin.Id);
 			}
 		}
 
@@ -68,10 +66,14 @@ public partial class ViewTerminModal : ComponentBase
 
 	private void Close()
 	{
-		if (NavigationManager != null)
-		{
-			NavigationManager.NavigateTo("/termins");
-		}
+		NavigationManager?.NavigateTo("/termins");
+	}
+
+	private IEnumerable<PlayerDto> GetTeamPlayers(int teamNumber)
+	{
+		return _termin?
+			.Players?
+			.Where(p => p.TeamNumber == teamNumber) ?? [];
 	}
 
 	#endregion
