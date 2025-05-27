@@ -18,53 +18,39 @@ else
 		</div>
 
 		<div class="teams-container">
-			<div class="team-table">
-				<h4>Team 1</h4>
-				<table>
-					<thead>
-						<tr>
-							<th>Player</th>
-							<th>Rating</th>
-						</tr>
-					</thead>
-					<tbody>
-						@if (_termin?.Players != null)
-						{
-							@foreach (var player in _termin.Players.Where(p => p.TeamNumber == 1))
-							{
+			@if (_teamNumbers != null && _teamNumbers.Any())
+			{
+				@foreach (var teamNumber in _teamNumbers)
+				{
+					<div class="team-table">
+						<h4>Team @teamNumber</h4>
+						<table>
+							<thead>
 								<tr>
-									<td>@player.FullName</td>
-									<td>@player.Rating</td>
+									<th>Player</th>
+									<th>Rating</th>
 								</tr>
-							}
-						}
-					</tbody>
-				</table>
-			</div>
-
-			<div class="team-table">
-				<h4>Team 2</h4>
-				<table>
-					<thead>
-						<tr>
-							<th>Player</th>
-							<th>Rating</th>
-						</tr>
-					</thead>
-					<tbody>
-						@if (_termin?.Players != null)
-						{
-							@foreach (var player in _termin.Players.Where(p => p.TeamNumber == 2))
-							{
-								<tr>
-									<td>@player.FullName</td>
-									<td>@player.Rating</td>
-								</tr>
-							}
-						}
-					</tbody>
-				</table>
-			</div>
+							</thead>
+							<tbody>
+								@if (_termin?.Players != null)
+								{
+									@foreach (var player in _termin.Players.Where(p => p.TeamNumber == teamNumber))
+									{
+										<tr>
+											<td>@player.FullName</td>
+											<td>@player.Rating</td>
+										</tr>
+									}
+								}
+							</tbody>
+						</table>
+					</div>
+				}
+			}
+			else
+			{
+				<p>No teams have been created yet.</p>
+			}
 		</div>
 	</div>
 }

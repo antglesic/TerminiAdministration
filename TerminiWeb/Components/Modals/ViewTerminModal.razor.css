@@ -42,10 +42,12 @@
 		display: flex;
 		gap: 20px;
 		justify-content: space-between;
+		flex-wrap: wrap;
 	}
 
 	.team-table {
 		flex: 1;
+		min-width: 300px;
 	}
 
 	table {

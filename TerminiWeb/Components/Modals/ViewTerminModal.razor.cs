@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Components;
+using TerminiWeb.Infrastructure.PlayerService.Dtos;
 using TerminiWeb.Infrastructure.TerminService;
 using TerminiWeb.Infrastructure.TerminService.Dtos;
 
@@ -16,6 +17,7 @@ public partial class ViewTerminModal : ComponentBase
 	#region Fields
 
 	private TerminDto? _termin;
+	private List<int?>? _teamNumbers = new();
 
 	#endregion
 
@@ -44,6 +46,21 @@ public partial class ViewTerminModal : ComponentBase
 		{
 			_termin = TerminData;
 			Logger?.LogInformation("Initialized ViewTerminModal with Termin ID: {TerminId}", _termin.Id);
+
+			if (_termin != null && _termin.Players != null && _termin.Players.Any())
+			{
+				_teamNumbers = _termin.Players
+					.Select(p => p.TeamNumber)
+					.Distinct()
+					.OrderBy(t => t)
+					.ToList();
+
+				Logger?.LogInformation("Team numbers for the termin: {TeamNumbers}", string.Join(", ", _teamNumbers));
+			}
+			else
+			{
+				Logger?.LogWarning("No players found for the termin with ID: {TerminId}", _termin.Id);
+			}
 		}
 
 		await base.OnInitializedAsync();
