@@ -5,6 +5,7 @@
     [TerminId]     INT      NOT NULL,
     [PlayerId]     INT      NOT NULL,
     [PlayerRating] INT      NULL,
+    [TeamNumber]   INT      NULL,
     CONSTRAINT [PK_Termini_Termin_Players_Id] PRIMARY KEY CLUSTERED ([Id] ASC),
     CONSTRAINT [FK_Termini_Termin_Players_PlayerId] FOREIGN KEY ([PlayerId]) REFERENCES [Termini].[Player] ([Id]),
     CONSTRAINT [FK_Termini_Termin_Players_TerminId] FOREIGN KEY ([TerminId]) REFERENCES [Termini].[Termin] ([Id])
