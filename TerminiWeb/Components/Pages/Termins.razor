@@ -2,7 +2,7 @@
 
 @using TerminiWeb.Infrastructure.PlayerService.Dtos
 @using TerminiWeb.Infrastructure.TerminService.Dtos
-@using TerminiWeb.Components.Common
+@using GrabaUIPackage.Components.Common
 
 @if (_termins == null)
 {
@@ -44,7 +44,7 @@ else
 				</MudButton>
 			</Template>
 		</GridColumn>
-		<GridColumn TItem="TerminDto" Sortable="false" Alignment="Common.Enumerators.AlignOption.Right">
+		<GridColumn TItem="TerminDto" Sortable="false" Alignment="GrabaUIPackage.Components.Common.Enumerators.AlignOption.Right">
 			<Template Context="termin">
 				<ContextMenu>
 					<ContextMenuItem Text="Edit" OnClick="async () => await EditTermin(termin)" />

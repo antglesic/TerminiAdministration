@@ -1,4 +1,4 @@
-@using TerminiWeb.Components.Common
+@using GrabaUIPackage.Components.Common
 @using TerminiWeb.Infrastructure.PlayerService.Dtos
 @using TerminiWeb.Infrastructure.TerminService.Dtos
 
@@ -22,7 +22,7 @@
 					<GridColumn TItem="PlayerDto" Property="Name" Caption="Name" Sortable="true" Filterable="false" />
 					<GridColumn TItem="PlayerDto" Property="Surname" Caption="Surname" Sortable="true" Filterable="false" />
 					<GridColumn TItem="PlayerDto" Property="FullName" Caption="Full Name" Sortable="true" Filterable="false" />
-					<GridColumn TItem="PlayerDto" Caption="Rating" Sortable="false" Alignment="Common.Enumerators.AlignOption.Center">
+					<GridColumn TItem="PlayerDto" Caption="Rating" Sortable="false" Alignment="GrabaUIPackage.Components.Common.Enumerators.AlignOption.Center">
 						<Template Context="player">
 							<DropDown T="@(PlayerRatingListDto)"
 								Items="@(_playerRatingOptions)"
