@@ -21,11 +21,14 @@ else
 			  PageSizeOptions="@_pageSizeOptions"
 			  PageNumber="@_pageNumber"
 			  PageSize="@_pageSize"
+			  OnPageChanged="@OnPageChanged"
+			  FrontendPagination="true"
 			  Filterable="true"
 			  FilterModel="@_filterModel"
 			  OnSearch="@FilteredSearch"
 			  RowSelectionIdentifierProperty="Id"
-			  EnableRowSelection="true">
+			  EnableRowSelection="true"
+			  SelectedRowItemChanged="@OnSelectedItemChanged">
 		<GridColumn TItem="PlayerDto" Property="Name" Caption="Name" Sortable="false" Filterable="true" FilterModelProperty="Name" />
 		<GridColumn TItem="PlayerDto" Property="Surname" Caption="Surname" Sortable="false" Filterable="true" FilterModelProperty="Surname" />
 		<GridColumn TItem="PlayerDto" Property="FullName" Caption="Full Name" Sortable="true" Filterable="true" FilterModelProperty="FullName" />

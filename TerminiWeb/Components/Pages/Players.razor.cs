@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using GrabaUIPackage.Components.Common.EventArgs;
+using Microsoft.AspNetCore.Components;
 using MudBlazor;
 using TerminiWeb.Components.Modals;
 using TerminiWeb.FilterModels;
@@ -14,8 +15,9 @@ namespace TerminiWeb.Components.Pages
 
 		private bool firstLoad = true;
 		private IEnumerable<PlayerDto>? _players;
-		private readonly int _pageSize = 5;
-		private readonly int _pageNumber = 1;
+		private int _pageSize = 5;
+		private int _pageNumber = 1;
+		private int _totalCount;
 		private readonly int[] _pageSizeOptions = [5, 10, 20];
 		private readonly PlayerFilterModel _filterModel = new PlayerFilterModel();
 
@@ -63,9 +65,11 @@ namespace TerminiWeb.Components.Pages
 				{
 					GetPlayerListResponse response = await PlayerService.GetPlayerList(request);
 
-					if (response != null && response.Players != null && response.Players.Any())
+					if (response != null)
 					{
-						_players = response.Players;
+						_players = response.Players ?? [];
+						_totalCount = _players.Any() ? _pageSize : 0;
+						return true;
 					}
 				}
 			}
@@ -75,13 +79,15 @@ namespace TerminiWeb.Components.Pages
 				return false;
 			}
 
-			return true;
+			_players = [];
+			_totalCount = 0;
+			return false;
 		}
 
 		private async Task FilteredSearch()
 		{
 			await GetPlayers(_filterModel);
-			StateHasChanged();
+			await InvokeAsync(StateHasChanged);
 		}
 
 		public void OnSelectedItemChanged(PlayerDto item)
@@ -150,6 +156,14 @@ namespace TerminiWeb.Components.Pages
 		private void CreateNewPlayer()
 		{
 			NavigationManager?.NavigateTo("/players/create");
+		}
+
+		private async Task OnPageChanged(PageChangedEventArgs args)
+		{
+			_pageNumber = args.CurrentPage;
+			_pageSize = args.PageSize;
+
+			await InvokeAsync(StateHasChanged);
 		}
 
 		#endregion
