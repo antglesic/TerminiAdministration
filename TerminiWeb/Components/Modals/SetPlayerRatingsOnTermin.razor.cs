@@ -1,3 +1,4 @@
+using GrabaUIPackage.Components.Common.EventArgs;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 using TerminiWeb.Infrastructure.PlayerService.Dtos;
@@ -15,13 +16,13 @@ namespace TerminiWeb.Components.Modals
 		private IMudDialogInstance? MudDialog { get; set; }
 
 		[Inject]
-		private ITerminService? _terminService { get; set; }
+		private ITerminService? TerminService { get; set; }
 
 		[Inject]
-		private ILogger<SetPlayerRatingsOnTermin>? _logger { get; set; }
+		private ILogger<SetPlayerRatingsOnTermin>? Logger { get; set; }
 
 		[Inject]
-		private IDialogService? _dialogService { get; set; }
+		private IDialogService? DialogService { get; set; }
 
 		#endregion
 
@@ -34,7 +35,7 @@ namespace TerminiWeb.Components.Modals
 
 		#region Fields
 
-		private bool firstLoad = true;
+		private bool _firstLoad = true;
 		private TerminDto? _terminData;
 		private IEnumerable<PlayerDto>? _players;
 		private int _pageSize = 5;
@@ -61,7 +62,7 @@ namespace TerminiWeb.Components.Modals
 
 		protected override async Task OnInitializedAsync()
 		{
-			if (firstLoad)
+			if (_firstLoad)
 			{
 				if (TerminData != null)
 				{
@@ -74,16 +75,16 @@ namespace TerminiWeb.Components.Modals
 					else
 					{
 						// Handle the case when TerminData.Players list is null, if necessary
-						_logger?.LogWarning("TerminData.Players is null.");
+						Logger?.LogWarning("TerminData.Players is null.");
 					}
 				}
 				else
 				{
 					// Handle the case when TerminData is null, if necessary
-					_logger?.LogWarning("TerminData is null.");
+					Logger?.LogWarning("TerminData is null.");
 				}
 
-				firstLoad = false;
+				_firstLoad = false;
 				StateHasChanged();
 			}
 
@@ -100,15 +101,15 @@ namespace TerminiWeb.Components.Modals
 			catch (Exception ex)
 			{
 				Console.WriteLine(ex.Message);
-				_logger?.LogError(ex, "SetPlayerRatingsOnTermin.OnSelectedItemChanged() - Exception message: {Message}", ex.Message);
+				Logger?.LogError(ex, "SetPlayerRatingsOnTermin.OnSelectedItemChanged() - Exception message: {Message}", ex.Message);
 			}
 		}
 
 		public async Task Save()
 		{
-			if (_selectedPlayerRatings == null || _selectedPlayerRatings.Count() == 0)
+			if (_selectedPlayerRatings.Count() == 0)
 			{
-				_logger?.LogWarning("No player ratings selected.");
+				Logger?.LogWarning("No player ratings selected.");
 				return;
 			}
 			else
@@ -128,16 +129,24 @@ namespace TerminiWeb.Components.Modals
 						TerminPlayers = playerRatings
 					};
 
-					if (_terminService != null)
+					if (TerminService != null)
 					{
-						SetPlayerRatingsResponse? response = await _terminService.SetPlayerRatings(request);
-						_logger?.LogInformation("Player ratings to be saved: {PlayerRatings}", playerRatings);
+						await TerminService.SetPlayerRatings(request);
+						Logger?.LogInformation("Player ratings to be saved: {PlayerRatings}", playerRatings);
 					}
 				}
 			}
 
 			await InvokeAsync(StateHasChanged);
 			MudDialog?.Close(DialogResult.Ok(_selectedPlayerRatings));
+		}
+
+		private void OnPageChanged(PageChangedEventArgs args)
+		{
+			_pageNumber = args.CurrentPage;
+			_pageSize = args.PageSize;
+
+			StateHasChanged();
 		}
 
 		#endregion
